@@ -1,9 +1,13 @@
 package kappathetapi.ktp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 
 public class LoginActivity extends Activity {
@@ -36,4 +40,33 @@ public class LoginActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void loginPressed(View view) {
+        if(attemptLogin(view) == 0) {
+            //Intent intent = (this, HomePageActivity.class);
+            //startActivity(intent);
+        }
+        else {
+            TextView text = (TextView)view.findViewById(R.id.failed_login_text);
+            text.setText("Login failed. Get your shit together.");
+        }
+    }
+
+    public String getCredentials(View view) {
+        StringBuffer buffer = new StringBuffer();
+        EditText username = (EditText)findViewById(R.id.username_text);
+        EditText password = (EditText)findViewById(R.id.password_text);
+        buffer.append(username.getText());
+        buffer.append(' ');
+        buffer.append(password.getText());
+        return buffer.toString();
+    }
+
+    public int attemptLogin(View view) {
+        String credentials = getCredentials(view);
+        //TODO: do server stuff
+        return 0;
+    }
+
+
 }
