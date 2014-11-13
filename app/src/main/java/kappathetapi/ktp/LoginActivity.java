@@ -43,8 +43,8 @@ public class LoginActivity extends Activity {
 
     public void loginPressed(View view) {
         if(attemptLogin(view) == 0) {
-            //Intent intent = (this, HomePageActivity.class);
-            //startActivity(intent);
+            Intent intent = new Intent(this, HomePageActivity.class);
+            startActivity(intent);
         }
         else {
             TextView text = (TextView)view.findViewById(R.id.failed_login_text);
