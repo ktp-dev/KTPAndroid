@@ -48,6 +48,11 @@ public class HomePageActivity extends Activity
     }
 
     @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
