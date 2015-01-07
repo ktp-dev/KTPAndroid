@@ -15,4 +15,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
 
+    <string name="server_address">http://10.0.2.2:8080/login</string>
+
 </resources>

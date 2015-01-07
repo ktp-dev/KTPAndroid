@@ -34,11 +34,14 @@ public class ServerRequest {
             HttpEntity httpEntity = httpResponse.getEntity();
             is = httpEntity.getContent();
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         } catch (ClientProtocolException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+        }
+        catch (Throwable e) {
+
         }
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -52,25 +55,37 @@ public class ServerRequest {
             json = sb.toString();
             Log.e("JSON", json);
         } catch (Exception e) {
-            Log.e("Buffer Error", "Error converting result " + e.toString());
+            //Log.e("Buffer Error", "Error converting result " + e.toString());
+        }
+        catch (Throwable e) {
+
         }
         try {
             jObj = new JSONObject(json);
         } catch (JSONException e) {
-            Log.e("JSON Parser", "Error parsing data " + e.toString());
+            //Log.e("JSON Parser", "Error parsing data " + e.toString());
+        }
+        catch (Throwable e) {
+
         }
         return jObj;
     }
-    JSONObject jobj;
+
     public JSONObject getJSON(String url, List<NameValuePair> params) {
+        JSONObject jobj = null;
         Params param = new Params(url,params);
         Request myTask = new Request();
         try{
             jobj= myTask.execute(param).get();
-        }catch (InterruptedException e) {
-            e.printStackTrace();
-        }catch (ExecutionException e){
-            e.printStackTrace();
+        }
+        catch (InterruptedException e) {
+            //e.printStackTrace();
+        }
+        catch (ExecutionException e){
+            //e.printStackTrace();
+        }
+        catch (Throwable e) {
+
         }
         return jobj;
     }
@@ -91,7 +106,7 @@ public class ServerRequest {
         }
         @Override
         protected void onPostExecute(JSONObject json) {
-            super.onPostExecute(json);
+
         }
     }
 }
