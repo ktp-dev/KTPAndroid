@@ -71,7 +71,7 @@ public class LoginActivity extends Activity {
     }
 
     public void performLogin(View view) {
-        if(loginAttempts >= 3){
+        if(loginAttempts >= -1){ //shortcut for development
             Intent homePageActivity = new Intent(LoginActivity.this,HomePageActivity.class);
             startActivity(homePageActivity);
             finish();
@@ -100,7 +100,7 @@ public class LoginActivity extends Activity {
         loginAttempts++;
         params = getCredentials(view);
         JSONObject json = serverRequest.getJSON(getString(R.string.server_address), params);
-        /*if(json != null){
+        if(json != null){
             try{
                 String jsonstr = json.getString("response");
                 if(json.getBoolean("res")){
@@ -116,12 +116,10 @@ public class LoginActivity extends Activity {
                 Toast.makeText(getApplication(),jsonstr,Toast.LENGTH_LONG).show();
             }
             catch (JSONException e) {
-                //e.printStackTrace();
+                e.printStackTrace();
             }
-            catch(Throwable e) {
 
-            }
-        }*/
+        }
         return 1;
     }
 

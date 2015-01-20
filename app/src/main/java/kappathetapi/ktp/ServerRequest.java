@@ -34,15 +34,13 @@ public class ServerRequest {
             HttpEntity httpEntity = httpResponse.getEntity();
             is = httpEntity.getContent();
         } catch (UnsupportedEncodingException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         } catch (ClientProtocolException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         } catch (IOException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
-        catch (Throwable e) {
 
-        }
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     is, "iso-8859-1"), 8);
@@ -55,19 +53,15 @@ public class ServerRequest {
             json = sb.toString();
             Log.e("JSON", json);
         } catch (Exception e) {
-            //Log.e("Buffer Error", "Error converting result " + e.toString());
+            Log.e("Buffer Error", "Error converting result " + e.toString());
         }
-        catch (Throwable e) {
 
-        }
         try {
             jObj = new JSONObject(json);
         } catch (JSONException e) {
-            //Log.e("JSON Parser", "Error parsing data " + e.toString());
+            Log.e("JSON Parser", "Error parsing data " + e.toString());
         }
-        catch (Throwable e) {
 
-        }
         return jObj;
     }
 
@@ -79,14 +73,12 @@ public class ServerRequest {
             jobj= myTask.execute(param).get();
         }
         catch (InterruptedException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
         catch (ExecutionException e){
-            //e.printStackTrace();
+            e.printStackTrace();
         }
-        catch (Throwable e) {
 
-        }
         return jobj;
     }
     private static class Params {
