@@ -1,33 +1,35 @@
 package kappathetapi.ktp;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
+import android.net.http.AndroidHttpClient;
+import android.os.AsyncTask;
+import android.util.Log;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.*;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicHttpRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
-import android.os.AsyncTask;
-import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class ServerRequest {
     public enum RequestType{POST, GET, PUT, DELETE}
@@ -40,39 +42,32 @@ public class ServerRequest {
     public JSONObject getJSONFromUrl(String urlString, List<NameValuePair> params, RequestPath requestPath,
                                      RequestType requestType) {
         String fullUrl = urlString + pathToString(requestPath);
+        //URL url = new URL(fullUrl);
 
         try {
-            URL url = new  URL(fullUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpRequestBase httpRequest = new HttpPost(fullUrl);
-
-            switch(requestType) {
-                case POST:
-                    httpRequest = new HttpPost(fullUrl);
-                    ((HttpPost)httpRequest).setEntity(new UrlEncodedFormEntity(params));
-                    break;
-                case GET:
-                    httpRequest = new HttpGet(fullUrl);
-                    break;
-                case PUT:
-                    httpRequest = new HttpPut(fullUrl);
-                    ((HttpPut)httpRequest).setEntity(new UrlEncodedFormEntity(params));
-                    break;
-                case DELETE:
-                    httpRequest = new HttpDelete(fullUrl);
-                    break;
+            /*HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("x-access-token", String.valueOf(R.string.server_token));
+            con.setRequestProperty("Content Type", "application/json");
+            ArrayList<String> stringList = new ArrayList<>();
+            for(NameValuePair a : params) {
+                stringList.add(a.getValue());
             }
-            Header[] headers = new Header[1];
-            headers[0] = new BasicHeader("x-access-token", String.valueOf(R.string.server_token));
+            con.setRequestProperty(stringList.get(0), stringList.get(1));
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.getOutputStream().flush();
+            con.getOutputStream().close();*/
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+
+            HttpPost httpRequest = new HttpPost(fullUrl);
+            //Header[] headers = new Header[1];
+            //headers[0] = new BasicHeader("x-access-token", String.valueOf(R.string.server_token));
             //headers[1] = new BasicHeader("Content Type", "application/json");
-            httpRequest.setHeaders(headers);
-            //httpRequest.setHeader("x-access-token", String.valueOf(R.string.server_token));
-            //httpRequest.setHeader("ContentType", "application/json");
+            //httpRequest.setHeaders(headers);
+            httpRequest.setHeader("x-access-token", "5af9a24515589a73d0fa687e69cbaaa15918f833");
+            httpRequest.setHeader("Content-Type", "application/json");
+            httpRequest.setHeader("Accept", "application/json");
             HttpResponse httpResponse = httpClient.execute(httpRequest);
             HttpEntity httpEntity = httpResponse.getEntity();
             is = httpEntity.getContent();
@@ -145,7 +140,8 @@ public class ServerRequest {
         @Override
         protected JSONObject doInBackground(Params... args) {
             ServerRequest request = new ServerRequest();
-            JSONObject json = request.getJSONFromUrl(args[0].url,args[0].params, args[0].requestPath,
+            JSONObject json = null;
+            json = request.getJSONFromUrl(args[0].url, args[0].params, args[0].requestPath,
                     args[0].requestType);
             return json;
         }
