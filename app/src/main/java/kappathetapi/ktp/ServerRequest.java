@@ -5,34 +5,78 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicHttpRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.os.AsyncTask;
 import android.util.Log;
 
 public class ServerRequest {
+    public enum RequestType{POST, GET, PUT, DELETE}
+    public enum RequestPath{MEMBERS, LOGIN, PITCHES}
     static InputStream is = null;
     static JSONObject jObj = null;
     static String json = "";
     public ServerRequest() {
     }
-    public JSONObject getJSONFromUrl(String url, List<NameValuePair> params) {
+    public JSONObject getJSONFromUrl(String urlString, List<NameValuePair> params, RequestPath requestPath,
+                                     RequestType requestType) {
+        String fullUrl = urlString + pathToString(requestPath);
+
+        try {
+            URL url = new  URL(fullUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
         try {
             DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(url);
-            httpPost.setEntity(new UrlEncodedFormEntity(params));
-            HttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpRequestBase httpRequest = new HttpPost(fullUrl);
+
+            switch(requestType) {
+                case POST:
+                    httpRequest = new HttpPost(fullUrl);
+                    ((HttpPost)httpRequest).setEntity(new UrlEncodedFormEntity(params));
+                    break;
+                case GET:
+                    httpRequest = new HttpGet(fullUrl);
+                    break;
+                case PUT:
+                    httpRequest = new HttpPut(fullUrl);
+                    ((HttpPut)httpRequest).setEntity(new UrlEncodedFormEntity(params));
+                    break;
+                case DELETE:
+                    httpRequest = new HttpDelete(fullUrl);
+                    break;
+            }
+            Header[] headers = new Header[1];
+            headers[0] = new BasicHeader("x-access-token", String.valueOf(R.string.server_token));
+            //headers[1] = new BasicHeader("Content Type", "application/json");
+            httpRequest.setHeaders(headers);
+            //httpRequest.setHeader("x-access-token", String.valueOf(R.string.server_token));
+            //httpRequest.setHeader("ContentType", "application/json");
+            HttpResponse httpResponse = httpClient.execute(httpRequest);
             HttpEntity httpEntity = httpResponse.getEntity();
             is = httpEntity.getContent();
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (ClientProtocolException e) {
@@ -43,7 +87,7 @@ public class ServerRequest {
 
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    is, "iso-8859-1"), 8);
+                    is, "UTF-8"));
             StringBuilder sb = new StringBuilder();
             String line = null;
             while ((line = reader.readLine()) != null) {
@@ -61,13 +105,15 @@ public class ServerRequest {
         } catch (JSONException e) {
             Log.e("JSON Parser", "Error parsing data " + e.toString());
         }
+        //jObj = new JSONObject();
 
         return jObj;
     }
 
-    public JSONObject getJSON(String url, List<NameValuePair> params) {
+    public JSONObject getJSON(String url, RequestPath requestPath, RequestType requestType,
+                              List<NameValuePair> params) {
         JSONObject jobj = null;
-        Params param = new Params(url,params);
+        Params param = new Params(url, requestPath, requestType, params);
         Request myTask = new Request();
         try{
             jobj= myTask.execute(param).get();
@@ -83,9 +129,15 @@ public class ServerRequest {
     }
     private static class Params {
         String url;
+        RequestPath requestPath;
+        RequestType requestType;
         List<NameValuePair> params;
-        Params(String url, List<NameValuePair> params) {
+
+        Params(String url, RequestPath requestPath, RequestType requestType,
+               List<NameValuePair> params) {
             this.url = url;
+            this.requestPath = requestPath;
+            this.requestType = requestType;
             this.params = params;
         }
     }
@@ -93,12 +145,24 @@ public class ServerRequest {
         @Override
         protected JSONObject doInBackground(Params... args) {
             ServerRequest request = new ServerRequest();
-            JSONObject json = request.getJSONFromUrl(args[0].url,args[0].params);
+            JSONObject json = request.getJSONFromUrl(args[0].url,args[0].params, args[0].requestPath,
+                    args[0].requestType);
             return json;
         }
         @Override
         protected void onPostExecute(JSONObject json) {
 
         }
+    }
+    private String pathToString(RequestPath requestPath) {
+        switch (requestPath) {
+            case MEMBERS:
+                return "/api/members/";
+            case LOGIN:
+                return "/api/login/";
+            case PITCHES:
+                return "/api/pitches/";
+        }
+        return "";
     }
 }

@@ -7,7 +7,6 @@
     <string name="password">password</string>
     <string name="login">login</string>
     <string name="title_activity_home_page">HomePageActivity</string>
-    <string name="hello_world">Hello world!</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
@@ -15,6 +14,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
 
-    <string name="server_address">http://10.0.2.2:8080/login</string>
+    <string name="server_address">http://kappathetapi.com</string>
+    <string name="server_token">5af9a24515589a73d0fa687e69cbaaa15918f833</string>
 
 </resources>

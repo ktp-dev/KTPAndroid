@@ -33,7 +33,7 @@ public class LoginActivity extends Activity {
     Dialog resetDialog;
     ServerRequest serverRequest;
 
-    int loginAttempts;
+    private int loginAttempts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +71,7 @@ public class LoginActivity extends Activity {
     }
 
     public void performLogin(View view) {
-        if(loginAttempts >= -1){ //shortcut for development
+        if(loginAttempts > 1){ //shortcut for development
             Intent homePageActivity = new Intent(LoginActivity.this,HomePageActivity.class);
             startActivity(homePageActivity);
             finish();
@@ -90,8 +90,8 @@ public class LoginActivity extends Activity {
     public ArrayList<NameValuePair> getCredentials(View view) {
         ArrayList<NameValuePair> params = new ArrayList<>();
         usernameString = username.getText().toString();
-        passwordString = password.getText().toString();
-        params.add(new BasicNameValuePair("username", usernameString));
+        passwordString = "dollabillz";//password.getText().toString();
+        params.add(new BasicNameValuePair("account", usernameString));
         params.add(new BasicNameValuePair("password", passwordString));
         return params;
     }
@@ -99,26 +99,10 @@ public class LoginActivity extends Activity {
     public int attemptLogin(View view) {
         loginAttempts++;
         params = getCredentials(view);
-        JSONObject json = serverRequest.getJSON(getString(R.string.server_address), params);
+        JSONObject json = serverRequest.getJSON(getString(R.string.server_address), ServerRequest.RequestPath.LOGIN,
+                ServerRequest.RequestType.POST, params);
         if(json != null){
-            try{
-                String jsonstr = json.getString("response");
-                if(json.getBoolean("res")){
-                    String token = json.getString("token");
-                    String grav = json.getString("grav");
-                    SharedPreferences.Editor edit = preferences.edit();
-                    //Storing Data using SharedPreferences
-                    edit.putString("token", token);
-                    edit.putString("grav", grav);
-                    edit.commit();
-                    return 0;
-                }
-                Toast.makeText(getApplication(),jsonstr,Toast.LENGTH_LONG).show();
-            }
-            catch (JSONException e) {
-                e.printStackTrace();
-            }
-
+            Toast.makeText(getApplication(),json.toString(),Toast.LENGTH_LONG).show();
         }
         return 1;
     }
