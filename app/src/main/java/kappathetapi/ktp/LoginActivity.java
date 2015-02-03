@@ -71,19 +71,20 @@ public class LoginActivity extends Activity {
     }
 
     public void performLogin(View view) {
-        if(loginAttempts > 1){ //shortcut for development
-            Intent homePageActivity = new Intent(LoginActivity.this,HomePageActivity.class);
-            startActivity(homePageActivity);
-            finish();
-        }
-        if(attemptLogin(view) == 0) {
-            Intent homePageActivity = new Intent(LoginActivity.this,HomePageActivity.class);
-            startActivity(homePageActivity);
-            finish();
-        }
-        else {
-            TextView text = (TextView)(findViewById(R.id.failed_login_text));
-            text.setText("Login failed. Get your shit together.");
+        TextView text = (TextView)(findViewById(R.id.failed_login_text));
+        switch(attemptLogin(view)) {
+            case 0:
+                Intent homePageActivity = new Intent(LoginActivity.this,HomePageActivity.class);
+                startActivity(homePageActivity);
+                finish();
+                break;
+            case 1:
+                text.setText("Account not found. You in the right place, bruh?");
+                break;
+            case 2:
+                text.setText("Invalid password. What time is it? Bad O'Clock!");
+            default:
+                text.setText("Idk what's going on...\nContact sjdallst@umich.edu");
         }
     }
 
@@ -97,14 +98,25 @@ public class LoginActivity extends Activity {
     }
 
     public int attemptLogin(View view) {
-        loginAttempts++;
         params = getCredentials(view);
-        JSONObject json = serverRequest.getJSON(getString(R.string.server_address), ServerRequest.RequestPath.LOGIN,
+        String response = serverRequest.getResponse(getString(R.string.server_address), ServerRequest.RequestPath.LOGIN,
                 ServerRequest.RequestType.POST, params);
-        if(json != null){
-            Toast.makeText(getApplication(),json.toString(),Toast.LENGTH_LONG).show();
+        if(response != null){
+            Toast.makeText(getApplication(),response,Toast.LENGTH_LONG).show();
         }
-        return 1;
+
+        if(response.trim().compareTo("success") == 0) {
+            return 0;
+        }
+        if(response.trim().compareTo("account not found") == 0) {
+            return 1;
+        }
+        if(response.trim().compareTo("invalid password") == 0) {
+            return 2;
+        }
+
+        Log.e("Unrecognized response", response);
+        return 3;
     }
 
 

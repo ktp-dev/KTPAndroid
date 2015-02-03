@@ -43,12 +43,12 @@ public class ServerRequest {
     public enum RequestPath{MEMBERS, LOGIN, PITCHES}
     static InputStream is = null;
     static JSONObject jObj = null;
-    static String json = "";
+    static String response = "";
     private HttpRequestBase httpRequest;
     public ServerRequest() {
         httpRequest = new HttpPut("");//default value so httpRequest is not empty.
     }
-    public JSONObject getJSONFromUrl(String urlString, List<NameValuePair> params, RequestPath requestPath,
+    public String getResponseFromUrl(String urlString, List<NameValuePair> params, RequestPath requestPath,
                                      RequestType requestType) {
         String fullUrl = urlString + pathToString(requestPath);
         //"http://35.2.181.254:8080"
@@ -80,22 +80,16 @@ public class ServerRequest {
             Log.e("Buffer Error", "Error converting result " + e.toString());
         }
 
-        try {
-            jObj = new JSONObject(json);
-        } catch (JSONException e) {
-            Log.e("JSON Parser", "Error parsing data " + e.toString());
-        }
-
-        return jObj;
+        return response;
     }
 
-    public JSONObject getJSON(String url, RequestPath requestPath, RequestType requestType,
+    public String getResponse(String url, RequestPath requestPath, RequestType requestType,
                               List<NameValuePair> params) {
-        JSONObject jobj = null;
+        String response = null;
         Params param = new Params(url, requestPath, requestType, params);
         Request myTask = new Request();
         try{
-            jobj= myTask.execute(param).get();
+            response = myTask.execute(param).get();
         }
         catch (InterruptedException e) {
             e.printStackTrace();
@@ -104,7 +98,7 @@ public class ServerRequest {
             e.printStackTrace();
         }
 
-        return jobj;
+        return response;
     }
     private static class Params {
         String url;
@@ -120,17 +114,17 @@ public class ServerRequest {
             this.params = params;
         }
     }
-    private class Request extends AsyncTask<Params, String, JSONObject> {
+    private class Request extends AsyncTask<Params, String, String> {
         @Override
-        protected JSONObject doInBackground(Params... args) {
+        protected String doInBackground(Params... args) {
             ServerRequest request = new ServerRequest();
-            JSONObject json = null;
-            json = request.getJSONFromUrl(args[0].url, args[0].params, args[0].requestPath,
+            String response = null;
+            response = request.getResponseFromUrl(args[0].url, args[0].params, args[0].requestPath,
                     args[0].requestType);
-            return json;
+            return response;
         }
         @Override
-        protected void onPostExecute(JSONObject json) {
+        protected void onPostExecute(String json) {
 
         }
     }
@@ -194,7 +188,7 @@ public class ServerRequest {
             sb.append(line + "\n");
         }
         is.close();
-        json = sb.toString();
-        Log.e("JSON", json);
+        response = sb.toString();
+        Log.e("JSON", response);
     }
 }
