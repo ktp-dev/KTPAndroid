@@ -10,7 +10,11 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.*;
 import org.apache.http.message.BasicHeader;
@@ -40,49 +44,24 @@ public class ServerRequest {
     static InputStream is = null;
     static JSONObject jObj = null;
     static String json = "";
+    private HttpRequestBase httpRequest;
     public ServerRequest() {
+        httpRequest = new HttpPut("");//default value so httpRequest is not empty.
     }
     public JSONObject getJSONFromUrl(String urlString, List<NameValuePair> params, RequestPath requestPath,
                                      RequestType requestType) {
-        String fullUrl = "http://35.2.181.254:8080";//urlString + pathToString(requestPath);
-        //URL url = new URL(fullUrl);
+        String fullUrl = urlString + pathToString(requestPath);
+        //"http://35.2.181.254:8080"
 
         try {
-            /*HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("POST");
-            con.setRequestProperty("x-access-token", String.valueOf(R.string.server_token));
-            con.setRequestProperty("Content Type", "application/json");
-            ArrayList<String> stringList = new ArrayList<>();
-            for(NameValuePair a : params) {
-                stringList.add(a.getValue());
-            }
-            con.setRequestProperty(stringList.get(0), stringList.get(1));
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.getOutputStream().flush();
-            con.getOutputStream().close();*/
             DefaultHttpClient httpClient = new DefaultHttpClient();
+            setRequestType(requestType, fullUrl);
+            setDefaultHeaders();
 
-            HttpPost httpRequest = new HttpPost(fullUrl);
-            //Header[] headers = new Header[1];
-            //headers[0] = new BasicHeader("x-access-token", String.valueOf(R.string.server_token));
-            //headers[1] = new BasicHeader("Content Type", "application/json");
-            //httpRequest.setHeaders(headers);
-            httpRequest.setHeader("x-access-token", "5af9a24515589a73d0fa687e69cbaaa15918f833");
-            httpRequest.setHeader("Content-Type", "application/json");
-            httpRequest.setHeader("Accept", "application/json");
-            JSONObject jsonObject = new JSONObject();
-            try {
-                for (NameValuePair p : params) {
-                    jsonObject.put(p.getName(), p.getValue());
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if(requestType == RequestType.PUT || requestType == RequestType.POST) {
+                setBody(params, requestType);
             }
-            StringEntity stringEntity = new StringEntity(jsonObject.toString());
-            stringEntity.setContentType("application/json");
-            stringEntity.setContentEncoding("UTF-8");
-            httpRequest.setEntity(stringEntity);
+
             HttpResponse httpResponse = httpClient.execute(httpRequest);
             HttpEntity httpEntity = httpResponse.getEntity();
             is = httpEntity.getContent();
@@ -96,16 +75,7 @@ public class ServerRequest {
         }
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    is, "UTF-8"));
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-            is.close();
-            json = sb.toString();
-            Log.e("JSON", json);
+            getStringFromInputStream();
         } catch (Exception e) {
             Log.e("Buffer Error", "Error converting result " + e.toString());
         }
@@ -115,7 +85,6 @@ public class ServerRequest {
         } catch (JSONException e) {
             Log.e("JSON Parser", "Error parsing data " + e.toString());
         }
-        //jObj = new JSONObject();
 
         return jObj;
     }
@@ -175,5 +144,57 @@ public class ServerRequest {
                 return "/api/pitches/";
         }
         return "";
+    }
+    private void setRequestType(RequestType requestType, String url) {
+        switch(requestType) {
+            case POST:
+                httpRequest = new HttpPost(url);
+                break;
+            case GET:
+                httpRequest = new HttpGet(url);
+                break;
+            case PUT:
+                httpRequest = new HttpPut(url);
+                break;
+            case DELETE:
+                httpRequest = new HttpDelete(url);
+                break;
+        }
+    }
+    private void setDefaultHeaders() {
+        httpRequest.setHeader("x-access-token", "5af9a24515589a73d0fa687e69cbaaa15918f833");
+        httpRequest.setHeader("Content-Type", "application/json");
+        httpRequest.setHeader("Accept", "application/json");
+    }
+    private void setBody(List<NameValuePair> params, RequestType requestType) throws UnsupportedEncodingException{
+        JSONObject jsonObject = new JSONObject();
+        try {
+            for (NameValuePair p : params) {
+                jsonObject.put(p.getName(), p.getValue());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        StringEntity stringEntity = new StringEntity(jsonObject.toString());
+        stringEntity.setContentType("application/json");
+        stringEntity.setContentEncoding("UTF-8");
+        if(requestType == RequestType.PUT) {
+            ((HttpPut)httpRequest).setEntity(stringEntity);
+        }
+        else if(requestType == RequestType.POST) {
+            ((HttpPost)httpRequest).setEntity(stringEntity);
+        }
+    }
+    private void getStringFromInputStream() throws UnsupportedEncodingException, IOException{
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                is, "UTF-8"));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line + "\n");
+        }
+        is.close();
+        json = sb.toString();
+        Log.e("JSON", json);
     }
 }

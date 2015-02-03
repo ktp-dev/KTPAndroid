@@ -89,7 +89,7 @@ public class LoginActivity extends Activity {
 
     public ArrayList<NameValuePair> getCredentials(View view) {
         ArrayList<NameValuePair> params = new ArrayList<>();
-        usernameString = username.getText().toString();
+        usernameString = "54c5acc8e21b4c3317a85d0d";
         passwordString = "dollabillz";//password.getText().toString();
         params.add(new BasicNameValuePair("account", usernameString));
         params.add(new BasicNameValuePair("password", passwordString));
