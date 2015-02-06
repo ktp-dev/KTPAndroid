@@ -14,8 +14,13 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
+    <string name="members_title">Members</string>
+    <string name="my_profile_title">My Profile</string>
 
     <string name="server_address">http://kappathetapi.com</string>
     <string name="server_token">5af9a24515589a73d0fa687e69cbaaa15918f833</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

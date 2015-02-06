@@ -21,7 +21,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import kappathetapi.ktp.dummy.DummyContent;
 
 /**
  * A fragment representing a list of Items.
@@ -33,7 +32,7 @@ import kappathetapi.ktp.dummy.DummyContent;
  * interface.
  */
 public class ProfileListFragment extends ListFragment {
-
+    private static final String ARG_SECTION_NUMBER = "section_number";
     /**
      * The fragment's ListView/GridView.
      */
@@ -46,9 +45,10 @@ public class ProfileListFragment extends ListFragment {
     private ListAdapter mAdapter;
 
     // TODO: Rename and change types of parameters
-    public static ProfileListFragment newInstance() {
+    public static ProfileListFragment newInstance(int sectionNumber) {
         ProfileListFragment fragment = new ProfileListFragment();
         Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
         return fragment;
     }
@@ -82,10 +82,12 @@ public class ProfileListFragment extends ListFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
+
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception.
         try {
             mCallback = (OnSelectionListener) activity;
+            ((HomePageActivity) activity).onSectionAttached(getString(R.string.members_title));
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnTimeSelectedListener");
