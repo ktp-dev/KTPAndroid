@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Toast;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ public class LoginActivity extends Activity {
     SharedPreferences preferences;
     Dialog resetDialog;
     ServerRequest serverRequest;
+    private JSONArray jsonArray = new JSONArray();
+    public final static String JSON_ARRAY = "com.kappathetapi.KTP.JSONArray";
 
     private int loginAttempts;
 
@@ -43,8 +46,12 @@ public class LoginActivity extends Activity {
         username = (EditText)findViewById(R.id.username_text);
         password = (EditText)findViewById(R.id.password_text);
         serverRequest = new ServerRequest();
-
-        loginAttempts = 0;
+        try {
+            jsonArray = new JSONArray(serverRequest.getResponse(getString(R.string.server_address),
+                    ServerRequest.RequestPath.MEMBERS, ServerRequest.RequestType.GET, params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -74,8 +81,9 @@ public class LoginActivity extends Activity {
         TextView text = (TextView)(findViewById(R.id.failed_login_text));
         switch(attemptLogin(view)) {
             case 0:
-                Intent homePageActivity = new Intent(LoginActivity.this,HomePageActivity.class);
-                startActivity(homePageActivity);
+                Intent homePageIntent = new Intent(LoginActivity.this,HomePageActivity.class);
+                homePageIntent.putExtra(JSON_ARRAY, jsonArray.toString());
+                startActivity(homePageIntent);
                 finish();
                 break;
             case 1:
