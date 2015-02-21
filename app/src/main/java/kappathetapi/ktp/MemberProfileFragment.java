@@ -1,12 +1,25 @@
 package kappathetapi.ktp;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import kappathetapi.ktp.java.Member;
 
 
 /**
@@ -18,12 +31,13 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class MemberProfileFragment extends Fragment {
-
+    private Member member;
 
     private OnFragmentInteractionListener mListener;
 
-    public static MemberProfileFragment newInstance(String memberJSON) {
+    public static MemberProfileFragment newInstance(JSONObject memberJSON) {
         MemberProfileFragment fragment = new MemberProfileFragment();
+        fragment.setMember(memberJSON);
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -36,13 +50,22 @@ public class MemberProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_member_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_member_profile, container, false);
+        PhotoRequest request = new PhotoRequest();
+        try {
+            ((ImageView) view.findViewById(R.id.profile_pic_view)).setImageBitmap(request.execute(member.getProfPicUrl()).get());
+        }catch(Throwable e) {
+            e.printStackTrace();
+        }
+        ((TextView)(view.findViewById(R.id.profile_name))).setText(member.getFirstName() + " " + member.getLastName());
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -84,4 +107,29 @@ public class MemberProfileFragment extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
+    public void setMember(JSONObject json) {
+        member = Member.createInstance(json);
+    }
+
+    private class PhotoRequest extends AsyncTask<String, String, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(String... arg) {
+            Bitmap bmp = null;
+            try {
+                URL url = new URL(arg[0]);
+                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                return bmp;
+            } catch(MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return bmp;
+        }
+        @Override
+        protected void onPostExecute(Bitmap bmp) {
+
+        }
+    }
 }

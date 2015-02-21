@@ -126,7 +126,7 @@ public class HomePageActivity extends Activity
         try {
             Toast.makeText(getApplication(), jsonArray.getJSONObject(pos).toString(), Toast.LENGTH_LONG).show();
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, MemberProfileFragment.newInstance(jsonArray.getJSONObject(pos).toString()))
+                    .replace(R.id.container, MemberProfileFragment.newInstance(jsonArray.getJSONObject(pos)))
                     .commit();
         } catch (JSONException e) {
             e.printStackTrace();

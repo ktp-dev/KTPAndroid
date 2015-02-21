@@ -107,8 +107,8 @@ public class LoginActivity extends Activity {
         usernameString = "sjdallst";
         passwordString = "dollabillz";//password.getText().toString();
         */
-        usernameString = username.getText().toString();
-        passwordString = password.getText().toString();
+        usernameString = username.getText().toString().trim();
+        passwordString = password.getText().toString().trim();
         boolean found = false;
         try {
             for (int i = 0; i < jsonArray.length() && !found; ++i) {
