@@ -16,6 +16,7 @@
     <string name="action_example">Example action</string>
     <string name="members_title">Members</string>
     <string name="my_profile_title">My Profile</string>
+    <string name="log_out">Log out</string>
 
     <string name="server_address">http://kappathetapi.com</string>
     <string name="server_token">5af9a24515589a73d0fa687e69cbaaa15918f833</string>

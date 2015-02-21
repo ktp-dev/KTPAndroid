@@ -138,4 +138,9 @@ public class HomePageActivity extends Activity
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+    @Override
+    public void onStop() {
+        super.onDestroy();
+    }
 }

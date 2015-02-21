@@ -47,9 +47,14 @@ public class LoginActivity extends Activity {
         password = (EditText)findViewById(R.id.password_text);
         serverRequest = new ServerRequest();
         try {
-            jsonArray = new JSONArray(serverRequest.getResponse(getString(R.string.server_address),
-                    ServerRequest.RequestPath.MEMBERS, ServerRequest.RequestType.GET, params));
-        } catch (JSONException e) {
+            if (savedInstanceState != null &&
+                    savedInstanceState.getString(JSON_ARRAY, "").compareTo("") != 0) {
+                jsonArray = new JSONArray(savedInstanceState.getString(JSON_ARRAY));
+            } else {
+                jsonArray = new JSONArray(serverRequest.getResponse(getString(R.string.server_address),
+                        ServerRequest.RequestPath.MEMBERS, ServerRequest.RequestType.GET, params));
+            }
+        } catch(JSONException e) {
             e.printStackTrace();
         }
     }
@@ -96,23 +101,42 @@ public class LoginActivity extends Activity {
         }
     }
 
-    public ArrayList<NameValuePair> getCredentials(View view) {
+    public ArrayList<NameValuePair> getCredentials(View view) throws WrongPasswordException{
         ArrayList<NameValuePair> params = new ArrayList<>();
-        usernameString = "54c5acc8e21b4c3317a85d0d";
+        /*FOR DEVELOPMENT PURPOSES
+        usernameString = "sjdallst";
         passwordString = "dollabillz";//password.getText().toString();
+        */
+        usernameString = username.getText().toString();
+        passwordString = password.getText().toString();
+        boolean found = false;
+        try {
+            for (int i = 0; i < jsonArray.length() && !found; ++i) {
+                if (((String) jsonArray.getJSONObject(i).get("uniqname")).compareTo(usernameString) == 0) {
+                    usernameString = ((String) jsonArray.getJSONObject(i).get("account"));
+                    found = true;
+                }
+            }
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+
+        if(!found) {
+            throw new WrongPasswordException();
+        }
         params.add(new BasicNameValuePair("account", usernameString));
         params.add(new BasicNameValuePair("password", passwordString));
         return params;
     }
 
     public int attemptLogin(View view) {
-        params = getCredentials(view);
+        try {
+            params = getCredentials(view);
+        } catch(WrongPasswordException e) {
+            return 1;
+        }
         String response = serverRequest.getResponse(getString(R.string.server_address), ServerRequest.RequestPath.LOGIN,
                 ServerRequest.RequestType.POST, params);
-        if(response != null){
-            Toast.makeText(getApplication(),response,Toast.LENGTH_LONG).show();
-        }
-
         if(response.trim().compareTo("success") == 0) {
             return 0;
         }
@@ -127,5 +151,11 @@ public class LoginActivity extends Activity {
         return 3;
     }
 
+    private class WrongPasswordException extends Throwable {
 
+    }
+
+    public JSONArray getMemberArray() {
+        return jsonArray;
+    }
 }
