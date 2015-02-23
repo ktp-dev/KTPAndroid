@@ -124,7 +124,7 @@ public class HomePageActivity extends Activity
     public void onSelection(int pos) {
         FragmentManager fragmentManager = getFragmentManager();
         try {
-            Toast.makeText(getApplication(), jsonArray.getJSONObject(pos).toString(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplication(), jsonArray.getJSONObject(pos).toString(), Toast.LENGTH_LONG).show();
             fragmentManager.beginTransaction()
                     .replace(R.id.container, MemberProfileFragment.newInstance(jsonArray.getJSONObject(pos)))
                     .commit();

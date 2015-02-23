@@ -32,7 +32,8 @@ import kappathetapi.ktp.java.Member;
  */
 public class MemberProfileFragment extends Fragment {
     private Member member;
-
+    private Bitmap bmp;
+    private View myView;
     private OnFragmentInteractionListener mListener;
 
     public static MemberProfileFragment newInstance(JSONObject memberJSON) {
@@ -57,15 +58,24 @@ public class MemberProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_member_profile, container, false);
+        myView = inflater.inflate(R.layout.fragment_member_profile, container, false);
+
         PhotoRequest request = new PhotoRequest();
-        try {
-            ((ImageView) view.findViewById(R.id.profile_pic_view)).setImageBitmap(request.execute(member.getProfPicUrl()).get());
-        }catch(Throwable e) {
-            e.printStackTrace();
-        }
-        ((TextView)(view.findViewById(R.id.profile_name))).setText(member.getFirstName() + " " + member.getLastName());
-        return view;
+        request.execute(getString(R.string.server_address) + member.getProfPicUrl());
+
+
+        ((TextView)(myView.findViewById(R.id.profile_name))).setText(member.getFirstName() + " " + member.getLastName());
+
+        ((TextView)(myView.findViewById(R.id.profile_year))).setText(String.valueOf(member.getYear()));
+
+        ((TextView)(myView.findViewById(R.id.profile_major))).setText(member.getMajor());
+
+        ((TextView)(myView.findViewById(R.id.profile_major))).setText(member.getMajor());
+
+        ((TextView)(myView.findViewById(R.id.profile_bio))).setText("Bio:\n" + member.getBiography());
+
+
+        return myView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -114,10 +124,16 @@ public class MemberProfileFragment extends Fragment {
     private class PhotoRequest extends AsyncTask<String, String, Bitmap> {
         @Override
         protected Bitmap doInBackground(String... arg) {
-            Bitmap bmp = null;
+            bmp = null;
             try {
                 URL url = new URL(arg[0]);
                 bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        ((ImageView) myView.findViewById(R.id.profile_pic_view)).setImageBitmap(bmp);
+                    }
+                });
+
                 return bmp;
             } catch(MalformedURLException e) {
                 e.printStackTrace();
