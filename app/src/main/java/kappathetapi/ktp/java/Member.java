@@ -46,12 +46,28 @@ public class Member {
         this.firstName = firstName;
     }
 
+    public void setFirstName(JSONObject obj) {
+        try {
+            this.firstName = obj.getString("first_name");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public String getLastName() {
         return lastName;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public void setLastName(JSONObject obj) {
+        try {
+            this.lastName = obj.getString("last_name");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getUniqname() {
@@ -62,12 +78,28 @@ public class Member {
         this.uniqname = uniqname;
     }
 
+    public void setUniqname(JSONObject obj) {
+        try {
+            this.uniqname = obj.getString("uniqname");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public int getYear() {
         return year;
     }
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public void setYear(JSONObject obj) {
+        try {
+            this.year = obj.getInt("year");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getMajor() {
@@ -78,12 +110,28 @@ public class Member {
         this.major = major;
     }
 
+    public void setMajor(JSONObject obj) {
+        try {
+            this.major = obj.getString("major");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public String getGender() {
         return gender;
     }
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public void setGender(JSONObject obj) {
+        try {
+            this.gender = obj.getString("gender");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getHometown() {
@@ -94,12 +142,28 @@ public class Member {
         this.hometown = hometown;
     }
 
+    public void setHometown(JSONObject obj) {
+        try {
+            this.hometown = obj.getString("hometown");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public String getBiography() {
         return biography;
     }
 
     public void setBiography(String biography) {
         this.biography = biography;
+    }
+
+    public void setBiography(JSONObject obj) {
+        try {
+            this.biography = obj.getString("biography");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getProfPicUrl() {
@@ -110,12 +174,28 @@ public class Member {
         this.profPicUrl = profPicUrl;
     }
 
+    public void setProfPicUrl(JSONObject obj) {
+        try {
+            this.profPicUrl = obj.getString("prof_pic_url");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setEmail(JSONObject obj) {
+        try {
+            this.email = obj.getString("email");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getPhoneNumber() {
@@ -126,12 +206,28 @@ public class Member {
         this.phoneNumber = phoneNumber;
     }
 
+    public void setPhoneNumber(JSONObject obj) {
+        try {
+            this.phoneNumber = obj.getString("phone_number");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public String getTwitter() {
         return twitter;
     }
 
     public void setTwitter(String twitter) {
         this.twitter = twitter;
+    }
+
+    public void setTwitter(JSONObject obj) {
+        try {
+            this.twitter = obj.getString("twitter");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getFacebook() {
@@ -142,12 +238,28 @@ public class Member {
         this.facebook = facebook;
     }
 
+    public void setFacebook(JSONObject obj) {
+        try {
+            this.facebook = obj.getString("facebook");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public String getLinkedin() {
         return linkedin;
     }
 
     public void setLinkedin(String linkedin) {
         this.linkedin = linkedin;
+    }
+
+    public void setLinkedin(JSONObject obj) {
+        try {
+            this.linkedin = obj.getString("linkedin");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getPersonalSite() {
@@ -158,12 +270,28 @@ public class Member {
         this.personalSite = personalSite;
     }
 
+    public void setPersonalSite(JSONObject obj) {
+        try {
+            this.personalSite = obj.getString("personal_site");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public String getPledgeClass() {
         return pledgeClass;
     }
 
     public void setPledgeClass(String pledgeClass) {
         this.pledgeClass = pledgeClass;
+    }
+
+    public void setPledgeClass(JSONObject obj) {
+        try {
+            this.uniqname = obj.getString("pledge_class");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getMembershipStatus() {
@@ -174,6 +302,14 @@ public class Member {
         this.membershipStatus = membershipStatus;
     }
 
+    public void setMembershipStatus(JSONObject obj) {
+        try {
+            this.membershipStatus = obj.getString("membership_status");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public String getRole() {
         return role;
     }
@@ -182,30 +318,34 @@ public class Member {
         this.role = role;
     }
 
-    public static Member createInstance(JSONObject obj) {
-        Member member = new Member();
+    public void setRole(JSONObject obj) {
         try {
-            member.setFirstName(obj.getString("first_name"));
-            member.setLastName(obj.getString("last_name"));
-            member.setUniqname(obj.getString("uniqname"));
-            member.setYear(obj.getInt("year"));
-            member.setMajor(obj.getString("major"));
-            member.setGender(obj.getString("gender"));
-            member.setHometown(obj.getString("hometown"));
-            member.setBiography(obj.getString("biography"));
-            member.setProfPicUrl(obj.getString("prof_pic_url"));
-            member.setEmail(obj.getString("email"));
-            member.setPhoneNumber(obj.getString("phone_number"));
-            member.setTwitter(obj.getString("twitter"));
-            member.setFacebook(obj.getString("facebook"));
-            member.setLinkedin(obj.getString("linkedin"));
-            member.setPersonalSite(obj.getString("personal_site"));
-            member.setPledgeClass(obj.getString("pledge_class"));
-            member.setMembershipStatus(obj.getString("membership_status"));
-            member.setRole(obj.getString("role"));
+            this.role = obj.getString("role");
         } catch(JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Member createInstance(JSONObject obj) {
+        Member member = new Member();
+        member.setFirstName(obj);
+        member.setLastName(obj);
+        member.setUniqname(obj);
+        member.setYear(obj);
+        member.setMajor(obj);
+        member.setGender(obj);
+        member.setHometown(obj);
+        member.setBiography(obj);
+        member.setProfPicUrl(obj);
+        member.setEmail(obj);
+        member.setPhoneNumber(obj);
+        member.setTwitter(obj);
+        member.setFacebook(obj);
+        member.setLinkedin(obj);
+        member.setPersonalSite(obj);
+        member.setPledgeClass(obj);
+        member.setMembershipStatus(obj);
+        member.setRole(obj);
 
         return member;
     }

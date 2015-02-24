@@ -10,6 +10,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -72,8 +73,11 @@ public class MemberProfileFragment extends Fragment {
 
         ((TextView)(myView.findViewById(R.id.profile_major))).setText(member.getMajor());
 
-        ((TextView)(myView.findViewById(R.id.profile_bio))).setText("Bio:\n" + member.getBiography());
-
+        if(member.getBiography() == null || member.getBiography().compareTo("") == 0) {
+            ((TextView)(myView.findViewById(R.id.profile_bio))).setText("");
+        } else {
+            ((TextView) (myView.findViewById(R.id.profile_bio))).setText("Bio:\n" + member.getBiography());
+        }
 
         return myView;
     }

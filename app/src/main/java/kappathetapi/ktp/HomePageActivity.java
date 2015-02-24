@@ -3,13 +3,17 @@ package kappathetapi.ktp;
 import android.app.Activity;
 
 import android.app.ActionBar;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +27,11 @@ import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.util.List;
+
+import kappathetapi.ktp.alertfragments.PhoneDialogFragment;
+import kappathetapi.ktp.java.Member;
 
 
 public class HomePageActivity extends Activity
@@ -40,6 +49,8 @@ public class HomePageActivity extends Activity
      */
     private CharSequence mTitle;
     public static JSONArray jsonArray = new JSONArray();
+    private Member currentMember;
+    private Member lastClickedMember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +136,7 @@ public class HomePageActivity extends Activity
         FragmentManager fragmentManager = getFragmentManager();
         try {
             //Toast.makeText(getApplication(), jsonArray.getJSONObject(pos).toString(), Toast.LENGTH_LONG).show();
+            lastClickedMember = Member.createInstance(jsonArray.getJSONObject(pos));
             fragmentManager.beginTransaction()
                     .replace(R.id.container, MemberProfileFragment.newInstance(jsonArray.getJSONObject(pos)))
                     .commit();
@@ -139,8 +151,46 @@ public class HomePageActivity extends Activity
 
     }
 
-    @Override
-    public void onStop() {
-        super.onDestroy();
+    public void phoneButtonPressed(View view) {
+        Uri number = Uri.parse("tel:0000000000");
+        Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
+        PackageManager packageManager = getPackageManager();
+        List<ResolveInfo> activities = packageManager.queryIntentActivities(callIntent, 0);
+        boolean isIntentSafe = activities.size() > 0;
+
+        showDialog();
+    }
+
+    void showDialog() {
+        String name = lastClickedMember.getFirstName();
+        String number = lastClickedMember.getPhoneNumber();
+        DialogFragment newFragment = PhoneDialogFragment.newInstance(number, name);
+        newFragment.show(getFragmentManager(), "dialog");
+    }
+
+    public void doCall() {
+        if(lastClickedMember.getPhoneNumber() == null ||
+                lastClickedMember.getPhoneNumber().compareTo("") == 0) {
+            Toast.makeText(getApplication(), "Number not set", Toast.LENGTH_LONG).show();
+        } else {
+            Uri number = Uri.parse("tel:" + lastClickedMember.getPhoneNumber());
+            Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
+            startActivity(callIntent);
+        }
+    }
+
+    public void doText() {
+        if(lastClickedMember.getPhoneNumber() == null ||
+                lastClickedMember.getPhoneNumber().compareTo("") == 0) {
+            Toast.makeText(getApplication(), "Number not set", Toast.LENGTH_LONG).show();
+        } else {
+            Uri number = Uri.parse("sms:" + lastClickedMember.getPhoneNumber());
+            Intent callIntent = new Intent(Intent.ACTION_VIEW, number);
+            startActivity(callIntent);
+        }
+    }
+
+    public void phoneCancel() {
+
     }
 }
