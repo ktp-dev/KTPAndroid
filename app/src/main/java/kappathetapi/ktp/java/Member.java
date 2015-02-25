@@ -3,38 +3,40 @@ package kappathetapi.ktp.java;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Comparator;
+
 /**
  * Created by sjdallst on 2/21/2015.
  */
 public class Member {
 
-    Member() {
+    public Member() {
     }
     // personal info
-    private String firstName;
-    private String lastName;
-    private String uniqname;
-    private int year;     // graduation year
-    private String major;
-    private String gender;         // {M,F}
-    private String hometown;
-    private String biography;
-    private String profPicUrl;
+    private String firstName = "";
+    private String lastName = "";
+    private String uniqname = "";
+    private int year = -1;     // graduation year
+    private String major = "";
+    private String gender = "";         // {M,F}
+    private String hometown = "";
+    private String biography = "";
+    private String profPicUrl = "";
 
     // contact info
-    private String email;          // default is umich email
-    private String phoneNumber;
+    private String email = "";          // default is umich email
+    private String phoneNumber = "";
 
     // sites and links
-    private String twitter;        // username
-    private String facebook;       // username
-    private String linkedin;       // username
-    private String personalSite;  // full link
+    private String twitter = "";        // username
+    private String facebook = "";       // username
+    private String linkedin = "";       // username
+    private String personalSite = "";  // full link
 
     // fraternity info
-    private String pledgeClass;       // {Alpha,Beta,Gamma,Delta,Epsilon,Zeta,Eta}
-    private String membershipStatus;  // {Active,Probation,Inactive,Eboard,Pledge}
-    private String role;               // {Member,Pledge,President,Secretary,Director of Membership, ...}
+    private String pledgeClass = "";       // {Alpha,Beta,Gamma,Delta,Epsilon,Zeta,Eta}
+    private String membershipStatus = "";  // {Active,Probation,Inactive,Eboard,Pledge}
+    private String role = "";               // {Member,Pledge,President,Secretary,Director of Membership, ...}
     //private String[] committees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Committee' }],
 
 
@@ -326,6 +328,33 @@ public class Member {
         }
     }
 
+    public JSONObject toJSON() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("first_name", getFirstName());
+            json.put("last_name", getLastName());
+            json.put("uniqname", getUniqname());
+            json.put("year", getYear());
+            json.put("major", getMajor());
+            json.put("gender", getMajor());
+            json.put("hometown", getHometown());
+            json.put("biography", getBiography());
+            json.put("prof_pic_url", getProfPicUrl());
+            json.put("email", getEmail());
+            json.put("phone_number", getPhoneNumber());
+            json.put("twitter", getTwitter());
+            json.put("facebook", getFacebook());
+            json.put("linkedin", getLinkedin());
+            json.put("personal_site", getPersonalSite());
+            json.put("pledge_class", getPledgeClass());
+            json.put("membership_status", getMembershipStatus());
+            json.put("role", getRole());
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
     public static Member createInstance(JSONObject obj) {
         Member member = new Member();
         member.setFirstName(obj);
@@ -348,5 +377,20 @@ public class Member {
         member.setRole(obj);
 
         return member;
+    }
+
+    public static class MemberNameComparator implements Comparator<Member> {
+
+        @Override
+        public int compare(Member lhs, Member rhs) {
+            if(lhs.getUniqname() == null || lhs.getFirstName() == null || lhs.getLastName() == null) {
+                return -1;
+            }
+            if(rhs.getUniqname() == null || rhs.getFirstName() == null || rhs.getLastName() == null) {
+                return 1;
+            }
+            return (lhs.getLastName() + lhs.getFirstName() + lhs.getUniqname()).compareToIgnoreCase(
+                    (rhs.getLastName() + rhs.getFirstName() + rhs.getUniqname()));
+        }
     }
 }

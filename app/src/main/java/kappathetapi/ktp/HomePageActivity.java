@@ -49,6 +49,7 @@ public class HomePageActivity extends Activity
      */
     private CharSequence mTitle;
     public static JSONArray jsonArray = new JSONArray();
+    public static Member[] memberArray;
     private Member currentMember;
     private Member lastClickedMember;
 
@@ -60,6 +61,13 @@ public class HomePageActivity extends Activity
         Intent intent = getIntent();
         try {
             jsonArray = new JSONArray(intent.getStringExtra(LoginActivity.JSON_ARRAY));
+            memberArray = new Member[jsonArray.length()];
+            for(int i = 0; i < memberArray.length; ++i) {
+                memberArray[i] = new Member();
+                if(Member.createInstance(jsonArray.getJSONObject(i)) != null) {
+                    memberArray[i] = Member.createInstance(jsonArray.getJSONObject(i));
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

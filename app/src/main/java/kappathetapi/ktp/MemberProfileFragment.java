@@ -45,6 +45,14 @@ public class MemberProfileFragment extends Fragment {
         return fragment;
     }
 
+    public static MemberProfileFragment newInstance(Member member) {
+        MemberProfileFragment fragment = new MemberProfileFragment();
+        fragment.setMember(member);
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public MemberProfileFragment() {
         // Required empty public constructor
     }
@@ -124,6 +132,8 @@ public class MemberProfileFragment extends Fragment {
     public void setMember(JSONObject json) {
         member = Member.createInstance(json);
     }
+
+    public void setMember(Member member) { this.member = member; }
 
     private class PhotoRequest extends AsyncTask<String, String, Bitmap> {
         @Override
