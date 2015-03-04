@@ -393,4 +393,19 @@ public class Member {
                     (rhs.getLastName() + rhs.getFirstName() + rhs.getUniqname()));
         }
     }
+
+    public static class MemberNameComparatorR implements Comparator<Member> {
+
+        @Override
+        public int compare(Member lhs, Member rhs) {
+            if(lhs.getUniqname() == null || lhs.getFirstName() == null || lhs.getLastName() == null) {
+                return -1;
+            }
+            if(rhs.getUniqname() == null || rhs.getFirstName() == null || rhs.getLastName() == null) {
+                return 1;
+            }
+            return (rhs.getLastName() + rhs.getFirstName() + rhs.getUniqname()).compareToIgnoreCase(
+                    (lhs.getLastName() + lhs.getFirstName() + lhs.getUniqname()));
+        }
+    }
 }

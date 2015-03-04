@@ -54,23 +54,9 @@ public class LoginActivity extends Activity {
             if (savedInstanceState != null &&
                     savedInstanceState.getString(JSON_ARRAY, "").compareTo("") != 0) {
                 jsonArray = new JSONArray(savedInstanceState.getString(JSON_ARRAY));
-                memberArray = new Member[jsonArray.length()];
-                for(int i = 0; i < memberArray.length; ++i) {
-                    memberArray[i] = new Member();
-                    if(Member.createInstance(jsonArray.getJSONObject(i)) != null) {
-                        memberArray[i] = Member.createInstance(jsonArray.getJSONObject(i));
-                    }
-                }
             } else {
                 jsonArray = new JSONArray(membersRequest.getResponse(getString(R.string.server_address),
                         MembersRequest.RequestPath.MEMBERS, MembersRequest.RequestType.GET, params));
-                memberArray = new Member[jsonArray.length()];
-                for(int i = 0; i < memberArray.length; ++i) {
-                    memberArray[i] = new Member();
-                    if(Member.createInstance(jsonArray.getJSONObject(i)) != null) {
-                        memberArray[i] = Member.createInstance(jsonArray.getJSONObject(i));
-                    }
-                }
             }
         } catch(JSONException e) {
             e.printStackTrace();
@@ -105,11 +91,6 @@ public class LoginActivity extends Activity {
         switch(attemptLogin(view)) {
             case 0:
                 Intent homePageIntent = new Intent(LoginActivity.this,HomePageActivity.class);
-                jsonArray = new JSONArray();
-                Arrays.sort(memberArray, new Member.MemberNameComparator());
-                for(Member m : memberArray) {
-                    jsonArray.put(m.toJSON());
-                }
                 homePageIntent.putExtra(JSON_ARRAY, jsonArray.toString());
                 startActivity(homePageIntent);
                 finish();

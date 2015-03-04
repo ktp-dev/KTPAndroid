@@ -19,6 +19,7 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.Arrays;
 import java.util.List;
 
 import kappathetapi.ktp.fragments.MemberProfileFragment;
@@ -38,6 +39,7 @@ public class HomePageActivity extends Activity
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
+    private ProfileListFragment mProfileListFragment;
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
@@ -53,6 +55,7 @@ public class HomePageActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
+        //Get jsonArray of members from intent passed by LoginActivity
         Intent intent = getIntent();
         try {
             jsonArray = new JSONArray(intent.getStringExtra(LoginActivity.JSON_ARRAY));
@@ -74,6 +77,9 @@ public class HomePageActivity extends Activity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        //Set initial sorting of member list by name
+        Arrays.sort(memberArray, new Member.MemberNameComparator());
     }
 
     @Override

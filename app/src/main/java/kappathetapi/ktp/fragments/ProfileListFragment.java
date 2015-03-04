@@ -61,17 +61,11 @@ public class ProfileListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        super.onCreate(savedInstanceState);
         // Inflate the layout for this fragment
         List<String> namesArray = new ArrayList<String>();
-        try {
-            for (int i = 0; i < HomePageActivity.jsonArray.length(); ++i) {
-                namesArray.add((HomePageActivity.jsonArray.getJSONObject(i).getString("first_name")) +
-                        " " + (HomePageActivity.jsonArray.getJSONObject(i).getString("last_name")));
-            }
-        }catch(JSONException e) {
-            e.printStackTrace();
+        for (int i = 0; i < HomePageActivity.memberArray.length; ++i) {
+            namesArray.add((HomePageActivity.memberArray[i].getFirstName() +
+                    " " + (HomePageActivity.memberArray[i].getLastName())));
         }
         setListAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, namesArray));
     }
