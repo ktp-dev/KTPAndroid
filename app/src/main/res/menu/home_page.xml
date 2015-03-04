@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="kappathetapi.ktp.HomePageActivity">
+    tools:context="kappathetapi.ktp.activities.HomePageActivity">
     <item android:id="@+id/action_logout" android:title="@string/log_out"
         android:showAsAction="withText|ifRoom" />
     <item android:id="@+id/action_settings" android:title="@string/action_settings"

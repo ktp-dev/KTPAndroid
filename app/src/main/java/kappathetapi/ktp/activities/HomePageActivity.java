@@ -1,28 +1,19 @@
-package kappathetapi.ktp;
+package kappathetapi.ktp.activities;
 
 import android.app.Activity;
 
 import android.app.ActionBar;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -30,14 +21,18 @@ import org.json.JSONException;
 
 import java.util.List;
 
-import kappathetapi.ktp.alertfragments.PhoneDialogFragment;
-import kappathetapi.ktp.java.Member;
+import kappathetapi.ktp.fragments.MemberProfileFragment;
+import kappathetapi.ktp.fragments.NavigationDrawerFragment;
+import kappathetapi.ktp.fragments.ProfileListFragment;
+import kappathetapi.ktp.R;
+import kappathetapi.ktp.dialogs.PhoneDialogFragment;
+import kappathetapi.ktp.classes.Member;
 
 
 public class HomePageActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         ProfileListFragment.OnSelectionListener,
-        MemberProfileFragment.OnFragmentInteractionListener{
+        MemberProfileFragment.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.

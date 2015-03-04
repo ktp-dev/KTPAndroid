@@ -1,4 +1,4 @@
-package kappathetapi.ktp;
+package kappathetapi.ktp.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,21 +11,20 @@ import android.widget.TextView;
 
 import android.app.Dialog;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.jar.Attributes;
 
-import kappathetapi.ktp.java.Member;
+import kappathetapi.ktp.R;
+import kappathetapi.ktp.tasks.MembersRequest;
+import kappathetapi.ktp.classes.Member;
 
 
 public class LoginActivity extends Activity {
@@ -35,7 +34,7 @@ public class LoginActivity extends Activity {
     List<NameValuePair> params;
     SharedPreferences preferences;
     Dialog resetDialog;
-    ServerRequest serverRequest;
+    MembersRequest membersRequest;
     private JSONArray jsonArray = new JSONArray();
     private Member[] memberArray;
     public final static String JSON_ARRAY = "com.kappathetapi.KTP.JSONArray";
@@ -50,7 +49,7 @@ public class LoginActivity extends Activity {
 
         username = (EditText)findViewById(R.id.username_text);
         password = (EditText)findViewById(R.id.password_text);
-        serverRequest = new ServerRequest();
+        membersRequest = new MembersRequest();
         try {
             if (savedInstanceState != null &&
                     savedInstanceState.getString(JSON_ARRAY, "").compareTo("") != 0) {
@@ -63,8 +62,8 @@ public class LoginActivity extends Activity {
                     }
                 }
             } else {
-                jsonArray = new JSONArray(serverRequest.getResponse(getString(R.string.server_address),
-                        ServerRequest.RequestPath.MEMBERS, ServerRequest.RequestType.GET, params));
+                jsonArray = new JSONArray(membersRequest.getResponse(getString(R.string.server_address),
+                        MembersRequest.RequestPath.MEMBERS, MembersRequest.RequestType.GET, params));
                 memberArray = new Member[jsonArray.length()];
                 for(int i = 0; i < memberArray.length; ++i) {
                     memberArray[i] = new Member();
@@ -159,8 +158,8 @@ public class LoginActivity extends Activity {
         } catch(WrongPasswordException e) {
             return 1;
         }
-        String response = serverRequest.getResponse(getString(R.string.server_address), ServerRequest.RequestPath.LOGIN,
-                ServerRequest.RequestType.POST, params);
+        String response = membersRequest.getResponse(getString(R.string.server_address), MembersRequest.RequestPath.LOGIN,
+                MembersRequest.RequestType.POST, params);
         if(response.trim().compareTo("success") == 0) {
             return 0;
         }

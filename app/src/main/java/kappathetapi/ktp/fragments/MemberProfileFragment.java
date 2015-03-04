@@ -1,4 +1,4 @@
-package kappathetapi.ktp;
+package kappathetapi.ktp.fragments;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -10,7 +10,6 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,7 +19,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import kappathetapi.ktp.java.Member;
+import kappathetapi.ktp.R;
+import kappathetapi.ktp.classes.Member;
 
 
 /**
@@ -86,9 +86,9 @@ public class MemberProfileFragment extends Fragment {
         } else {
             ((TextView) (myView.findViewById(R.id.profile_bio))).setText("Bio:\n" + member.getBiography());
         }
-
         return myView;
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

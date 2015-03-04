@@ -1,4 +1,4 @@
-package kappathetapi.ktp.java;
+package kappathetapi.ktp.classes;
 
 import org.json.JSONException;
 import org.json.JSONObject;

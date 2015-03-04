@@ -1,4 +1,4 @@
-package kappathetapi.ktp;
+package kappathetapi.ktp.fragments;
 
 
 import android.app.Activity;
@@ -21,7 +21,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import kappathetapi.ktp.R;
+import kappathetapi.ktp.activities.HomePageActivity;
+import kappathetapi.ktp.activities.LoginActivity;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.

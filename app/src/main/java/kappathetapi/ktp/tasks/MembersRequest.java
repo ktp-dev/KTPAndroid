@@ -1,15 +1,12 @@
-package kappathetapi.ktp;
+package kappathetapi.ktp.tasks;
 
-import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.util.Log;
-import org.apache.http.Header;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -17,8 +14,6 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.*;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,25 +22,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.jar.Attributes;
 
-import javax.net.ssl.HttpsURLConnection;
-
-public class ServerRequest {
+public class MembersRequest {
     public enum RequestType{POST, GET, PUT, DELETE}
     public enum RequestPath{MEMBERS, LOGIN, PITCHES}
     static InputStream is = null;
     static JSONObject jObj = null;
     static String response = "";
     private HttpRequestBase httpRequest;
-    public ServerRequest() {
+    public MembersRequest() {
         httpRequest = new HttpPut("");//default value so httpRequest is not empty.
     }
     public String getResponseFromUrl(String urlString, List<NameValuePair> params, RequestPath requestPath,
@@ -117,7 +104,7 @@ public class ServerRequest {
     private class Request extends AsyncTask<Params, String, String> {
         @Override
         protected String doInBackground(Params... args) {
-            ServerRequest request = new ServerRequest();
+            MembersRequest request = new MembersRequest();
             String response = null;
             response = request.getResponseFromUrl(args[0].url, args[0].params, args[0].requestPath,
                     args[0].requestType);
