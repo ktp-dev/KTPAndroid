@@ -48,20 +48,120 @@
         android:layout_height="wrap_content"
         android:text="New Text"
         android:textSize="18sp"
-        android:id="@+id/profile_bio"
+        android:id="@+id/profile_role"
         android:layout_row="3"
         android:layout_column="0"
         android:layout_columnSpan="3"/>
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/call_or_text"
-        android:id="@+id/prof_phone_button"
+        android:text="New Text"
+        android:textSize="18sp"
+        android:id="@+id/profile_pledge_class"
         android:layout_row="4"
         android:layout_column="0"
+        android:layout_columnSpan="3"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:textSize="18sp"
+        android:id="@+id/profile_hometown"
+        android:layout_row="5"
+        android:layout_column="0"
+        android:layout_columnSpan="3"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:textSize="18sp"
+        android:id="@+id/profile_bio"
+        android:layout_row="6"
+        android:layout_column="0"
+        android:layout_columnSpan="3"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:textSize="18sp"
+        android:id="@+id/profile_membership_status"
+        android:layout_row="7"
+        android:layout_column="0"
+        android:layout_columnSpan="3"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:textSize="18sp"
+        android:id="@+id/profile_service_hours"
+        android:layout_row="8"
+        android:layout_column="0"
+        android:layout_columnSpan="3"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:textSize="18sp"
+        android:id="@+id/profile_pro_dev_events"
+        android:layout_row="9"
+        android:layout_column="0"
+        android:layout_columnSpan="3"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:textSize="18sp"
+        android:id="@+id/profile_personal_site"
+        android:layout_row="10"
+        android:layout_column="0"
+        android:layout_columnSpan="3"/>
+
+    <LinearLayout android:layout_row="11"
         android:layout_columnSpan="3"
-        android:layout_gravity="center|top"
-        android:onClick="phoneButtonPressed"/>
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/phone_button"
+            android:id="@+id/prof_phone_button"
+            android:layout_gravity="center|top"
+            android:onClick="phoneButtonPressed"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/email_button"
+            android:id="@+id/prof_email_button"
+
+            android:layout_gravity="center|top"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/twitter_button"
+            android:id="@+id/prof_twitter_button"
+            android:layout_gravity="center|top"/>
+    </LinearLayout>
+
+    <LinearLayout android:layout_columnSpan="3"
+        android:layout_row="12">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/facebook_button"
+            android:id="@+id/prof_facebook_button"
+            android:layout_gravity="center|top"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/linkedin_button"
+            android:id="@+id/prof_linkedin_button"
+            android:layout_gravity="center|top"/>
+    </LinearLayout>
 
 </GridLayout>

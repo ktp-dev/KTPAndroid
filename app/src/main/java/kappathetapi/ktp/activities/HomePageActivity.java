@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,7 +48,7 @@ public class HomePageActivity extends Activity
     private CharSequence mTitle;
     public static JSONArray jsonArray = new JSONArray();
     public static Member[] memberArray;
-    private Member currentMember;
+    public Member currentMember = new Member();
     private Member lastClickedMember;
 
     @Override
@@ -57,6 +58,7 @@ public class HomePageActivity extends Activity
 
         //Get jsonArray of members from intent passed by LoginActivity
         Intent intent = getIntent();
+        String uniqname = intent.getStringExtra(LoginActivity.MEMBER_UNIQNAME);
         try {
             jsonArray = new JSONArray(intent.getStringExtra(LoginActivity.JSON_ARRAY));
             memberArray = new Member[jsonArray.length()];
@@ -64,6 +66,10 @@ public class HomePageActivity extends Activity
                 memberArray[i] = new Member();
                 if(Member.createInstance(jsonArray.getJSONObject(i)) != null) {
                     memberArray[i] = Member.createInstance(jsonArray.getJSONObject(i));
+                    if(memberArray[i].getUniqname().equals(uniqname)) {
+                        Log.e("MADE IT: ", "CHYEAHHHHH BOIIII");
+                        currentMember = memberArray[i];
+                    }
                 }
             }
         } catch (JSONException e) {
@@ -143,15 +149,12 @@ public class HomePageActivity extends Activity
     @Override
     public void onSelection(int pos) {
         FragmentManager fragmentManager = getFragmentManager();
-        try {
-            //Toast.makeText(getApplication(), jsonArray.getJSONObject(pos).toString(), Toast.LENGTH_LONG).show();
-            lastClickedMember = Member.createInstance(jsonArray.getJSONObject(pos));
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, MemberProfileFragment.newInstance(jsonArray.getJSONObject(pos)))
-                    .commit();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
+        lastClickedMember = memberArray[pos];
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, MemberProfileFragment.newInstance(lastClickedMember))
+                .commit();
+
 
     }
 

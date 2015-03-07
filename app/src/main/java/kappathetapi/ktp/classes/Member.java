@@ -39,6 +39,9 @@ public class Member {
     private String role = "";               // {Member,Pledge,President,Secretary,Director of Membership, ...}
     //private String[] committees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Committee' }],
 
+    // membership requirements
+    private double serviceHours = -1;
+    private int proDevEvents = -1;
 
     public String getFirstName() {
         return firstName;
@@ -268,7 +271,7 @@ public class Member {
         return personalSite;
     }
 
-    public void setPersonalSite(String personal_site) {
+    public void setPersonalSite(String personalSite) {
         this.personalSite = personalSite;
     }
 
@@ -290,7 +293,7 @@ public class Member {
 
     public void setPledgeClass(JSONObject obj) {
         try {
-            this.uniqname = obj.getString("pledge_class");
+            this.pledgeClass = obj.getString("pledge_class");
         } catch(JSONException e) {
             e.printStackTrace();
         }
@@ -328,6 +331,39 @@ public class Member {
         }
     }
 
+    public double getServiceHours() {
+        return serviceHours;
+    }
+
+    public void setServiceHours(double hours) {
+        serviceHours = hours;
+    }
+
+    public void setServiceHours(JSONObject json) {
+        try {
+            serviceHours = json.getDouble("service_hours");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getProDevEvents() {
+        return proDevEvents;
+    }
+
+    public void setProDevEvents(int eventsNum) {
+        proDevEvents = eventsNum;
+    }
+
+    public void setProDevEvents(JSONObject json) {
+        try {
+            proDevEvents = json.getInt("pro_dev_events");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
         try {
@@ -349,6 +385,8 @@ public class Member {
             json.put("pledge_class", getPledgeClass());
             json.put("membership_status", getMembershipStatus());
             json.put("role", getRole());
+            json.put("service_hours", getServiceHours());
+            json.put("pro_dev_events", getProDevEvents());
         } catch(JSONException e) {
             e.printStackTrace();
         }
@@ -375,6 +413,8 @@ public class Member {
         member.setPledgeClass(obj);
         member.setMembershipStatus(obj);
         member.setRole(obj);
+        member.setServiceHours(obj);
+        member.setProDevEvents(obj);
 
         return member;
     }

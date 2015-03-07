@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import kappathetapi.ktp.R;
+import kappathetapi.ktp.activities.HomePageActivity;
 import kappathetapi.ktp.classes.Member;
 
 
@@ -72,20 +73,18 @@ public class MemberProfileFragment extends Fragment {
         PhotoRequest request = new PhotoRequest();
         request.execute(getString(R.string.server_address) + member.getProfPicUrl());
 
+        setNameText();
+        setYearText();
+        setMajorText();
+        setRoleText();
+        setPledgeClassText();
+        setHometownText();
+        setBioText();
+        setMembershipText();
+        setServiceHoursText();
+        setProDevEventsText();
+        setPersonalSiteText();
 
-        ((TextView)(myView.findViewById(R.id.profile_name))).setText(member.getFirstName() + " " + member.getLastName());
-
-        ((TextView)(myView.findViewById(R.id.profile_year))).setText(String.valueOf(member.getYear()));
-
-        ((TextView)(myView.findViewById(R.id.profile_major))).setText(member.getMajor());
-
-        ((TextView)(myView.findViewById(R.id.profile_major))).setText(member.getMajor());
-
-        if(member.getBiography() == null || member.getBiography().compareTo("") == 0) {
-            ((TextView)(myView.findViewById(R.id.profile_bio))).setText("");
-        } else {
-            ((TextView) (myView.findViewById(R.id.profile_bio))).setText("Bio:\n" + member.getBiography());
-        }
         return myView;
     }
 
@@ -161,5 +160,77 @@ public class MemberProfileFragment extends Fragment {
         protected void onPostExecute(Bitmap bmp) {
 
         }
+    }
+
+    private void setNameText() {
+        ((TextView)(myView.findViewById(R.id.profile_name))).setText(member.getFirstName() + " " + member.getLastName());
+    }
+
+    private void setYearText() {
+        ((TextView)(myView.findViewById(R.id.profile_year))).setText(String.valueOf(member.getYear()));
+    }
+
+    private void setMajorText() {
+        ((TextView)(myView.findViewById(R.id.profile_major))).setText(member.getMajor());
+    }
+
+    private void setRoleText() {
+        ((TextView)(myView.findViewById(R.id.profile_role))).setText(member.getRole());
+    }
+
+    private void setPledgeClassText() {
+        ((TextView)(myView.findViewById(R.id.profile_pledge_class))).setText("Pledge Class: " +
+                member.getPledgeClass());
+    }
+
+    private void setHometownText() {
+        ((TextView)(myView.findViewById(R.id.profile_hometown))).setText("Hometown: " +
+                member.getHometown());
+    }
+
+    private void setBioText() {
+        if(member.getBiography() == null || member.getBiography().compareTo("") == 0) {
+            ((TextView)(myView.findViewById(R.id.profile_bio))).setText("");
+        } else {
+            ((TextView) (myView.findViewById(R.id.profile_bio))).setText("Bio:\n" + member.getBiography());
+        }
+    }
+
+    //Only visible to self and EBoard
+    private void setMembershipText() {
+        if(member.getUniqname().equals(((HomePageActivity)getActivity()).currentMember.getUniqname())
+                || ((HomePageActivity)getActivity()).currentMember.getMembershipStatus().equals("Eboard")) {
+            ((TextView) (myView.findViewById(R.id.profile_membership_status))).setText("Membership Status: " +
+                    member.getMembershipStatus());
+        } else {
+            ((TextView) (myView.findViewById(R.id.profile_membership_status))).setVisibility(View.GONE);
+        }
+    }
+
+    //Only visible to self and EBoard
+    private void setServiceHoursText() {
+        if(member.getUniqname().equals(((HomePageActivity)getActivity()).currentMember.getUniqname())
+                || ((HomePageActivity)getActivity()).currentMember.getMembershipStatus().equals("Eboard")) {
+            ((TextView) (myView.findViewById(R.id.profile_service_hours))).setText("Service Hours: " +
+                    member.getServiceHours());
+        } else {
+            ((TextView) (myView.findViewById(R.id.profile_service_hours))).setVisibility(View.GONE);
+        }
+    }
+
+    //Only visible to self and EBoard
+    private void setProDevEventsText() {
+        if(member.getUniqname().equals(((HomePageActivity)getActivity()).currentMember.getUniqname())
+                ||((HomePageActivity)getActivity()).currentMember.getMembershipStatus().equals("Eboard")) {
+            ((TextView) (myView.findViewById(R.id.profile_pro_dev_events))).setText("ProDev Events: " +
+                    member.getProDevEvents());
+        } else {
+            ((TextView) (myView.findViewById(R.id.profile_pro_dev_events))).setVisibility(View.GONE);
+        }
+    }
+
+    private void setPersonalSiteText() {
+        ((TextView)(myView.findViewById(R.id.profile_personal_site))).setText("Personal Site: " +
+                member.getPersonalSite());
     }
 }

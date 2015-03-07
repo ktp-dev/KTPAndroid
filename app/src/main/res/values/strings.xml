@@ -18,10 +18,15 @@
     <string name="members_title">Members</string>
     <string name="my_profile_title">My Profile</string>
     <string name="log_out">Log out</string>
-    <string name="call_or_text">Call/Text</string>
     <string name="call">Call</string>
     <string name="text">Text</string>
     <string name="cancel">Cancel</string>
+
+    <string name="phone_button">P</string>
+    <string name="email_button">E</string>
+    <string name="twitter_button">T</string>
+    <string name="facebook_button">F</string>
+    <string name="linkedin_button">L</string>
 
     <string name="server_address">http://kappathetapi.com</string>
     <string name="server_token">5af9a24515589a73d0fa687e69cbaaa15918f833</string>

@@ -30,7 +30,7 @@ import kappathetapi.ktp.classes.Member;
 public class LoginActivity extends Activity {
     EditText username, password, resetEmail, code, newPassword;
     String usernameString, passwordString, resetEmailString,codeString,
-            newPasswordString;
+            newPasswordString, accountString = "";
     List<NameValuePair> params;
     SharedPreferences preferences;
     Dialog resetDialog;
@@ -38,6 +38,7 @@ public class LoginActivity extends Activity {
     private JSONArray jsonArray = new JSONArray();
     private Member[] memberArray;
     public final static String JSON_ARRAY = "com.kappathetapi.KTP.JSONArray";
+    public final static String MEMBER_UNIQNAME = "com.kappathetapi.KTP.MemberUniqname";
     public final static String MEMBER_ARRAY = "com.kappathetapi.KTP.MemberArray";
 
     private int loginAttempts;
@@ -92,6 +93,7 @@ public class LoginActivity extends Activity {
             case 0:
                 Intent homePageIntent = new Intent(LoginActivity.this,HomePageActivity.class);
                 homePageIntent.putExtra(JSON_ARRAY, jsonArray.toString());
+                homePageIntent.putExtra(MEMBER_UNIQNAME, usernameString);
                 startActivity(homePageIntent);
                 finish();
                 break;
@@ -117,7 +119,7 @@ public class LoginActivity extends Activity {
         try {
             for (int i = 0; i < jsonArray.length() && !found; ++i) {
                 if (((String) jsonArray.getJSONObject(i).get("uniqname")).compareTo(usernameString) == 0) {
-                    usernameString = ((String) jsonArray.getJSONObject(i).get("account"));
+                    accountString = ((String) jsonArray.getJSONObject(i).get("account"));
                     found = true;
                 }
             }
@@ -128,7 +130,7 @@ public class LoginActivity extends Activity {
         if(!found) {
             throw new WrongPasswordException();
         }
-        params.add(new BasicNameValuePair("account", usernameString));
+        params.add(new BasicNameValuePair("account", accountString));
         params.add(new BasicNameValuePair("password", passwordString));
         return params;
     }
