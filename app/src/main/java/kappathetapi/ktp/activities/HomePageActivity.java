@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import kappathetapi.ktp.classes.eventhandlers.EmailEventHandler;
 import kappathetapi.ktp.classes.eventhandlers.PhoneEventHandler;
+import kappathetapi.ktp.classes.eventhandlers.TwitterEventHandler;
 import kappathetapi.ktp.fragments.MemberProfileFragment;
 import kappathetapi.ktp.fragments.NavigationDrawerFragment;
 import kappathetapi.ktp.fragments.ProfileListFragment;
@@ -54,7 +55,10 @@ public class HomePageActivity extends Activity
 
         //Get jsonArray of members from intent passed by LoginActivity
         Intent intent = getIntent();
-        String uniqname = intent.getStringExtra(LoginActivity.MEMBER_UNIQNAME);
+        String uniqname = "";
+        if(intent.hasExtra(LoginActivity.MEMBER_UNIQNAME)) {
+            uniqname = intent.getStringExtra(LoginActivity.MEMBER_UNIQNAME);
+        }
         try {
             jsonArray = new JSONArray(intent.getStringExtra(LoginActivity.JSON_ARRAY));
             memberArray = new Member[jsonArray.length()];
@@ -166,6 +170,11 @@ public class HomePageActivity extends Activity
     public void emailButtonPressed(View view) {
         EmailEventHandler emailEventHandler = EmailEventHandler.newInstance(this, lastClickedMember);
         emailEventHandler.handleEvent(view);
+    }
+
+    public void twitterButtonPressed(View view) {
+        TwitterEventHandler twitterEventHandler = TwitterEventHandler.newInstance(this, lastClickedMember);
+        twitterEventHandler.handleEvent(view);
     }
 
 }
