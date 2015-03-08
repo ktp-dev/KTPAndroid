@@ -19,6 +19,7 @@ import org.json.JSONException;
 import java.util.Arrays;
 
 import kappathetapi.ktp.classes.eventhandlers.EmailEventHandler;
+import kappathetapi.ktp.classes.eventhandlers.FacebookEventHandler;
 import kappathetapi.ktp.classes.eventhandlers.PhoneEventHandler;
 import kappathetapi.ktp.classes.eventhandlers.TwitterEventHandler;
 import kappathetapi.ktp.fragments.MemberProfileFragment;
@@ -175,6 +176,11 @@ public class HomePageActivity extends Activity
     public void twitterButtonPressed(View view) {
         TwitterEventHandler twitterEventHandler = TwitterEventHandler.newInstance(this, lastClickedMember);
         twitterEventHandler.handleEvent(view);
+    }
+
+    public void facebookButtonPressed(View view) {
+        FacebookEventHandler facebookEventHandler = FacebookEventHandler.newInstance(this, lastClickedMember);
+        facebookEventHandler.handleEvent(view);
     }
 
 }

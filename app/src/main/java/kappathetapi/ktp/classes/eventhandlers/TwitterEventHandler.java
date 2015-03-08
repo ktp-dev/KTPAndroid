@@ -41,7 +41,7 @@ public class TwitterEventHandler {
     public void doTwitter() {
         if(lastClickedMember.getTwitter() == null ||
                 lastClickedMember.getTwitter().compareTo("") == 0) {
-            Toast.makeText(myActivity.getApplication(), "Number not set", Toast.LENGTH_LONG).show();
+            Toast.makeText(myActivity.getApplication(), "Twitter not set", Toast.LENGTH_LONG).show();
         } else {
             Intent intent = null;
             try {
