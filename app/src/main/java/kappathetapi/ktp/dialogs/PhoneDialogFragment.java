@@ -6,13 +6,17 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.app.Dialog;
 
-import kappathetapi.ktp.activities.HomePageActivity;
 import kappathetapi.ktp.R;
+import kappathetapi.ktp.classes.eventhandlers.PhoneEventHandler;
 
 public class PhoneDialogFragment extends DialogFragment {
 
-    public static PhoneDialogFragment newInstance(String number, String name) {
+    private PhoneEventHandler phoneEventHandler;
+
+    public static PhoneDialogFragment newInstance(String number, String name,
+                                                  PhoneEventHandler phoneEventHandler) {
         PhoneDialogFragment frag = new PhoneDialogFragment();
+        frag.setPhoneEventHandler(phoneEventHandler);
         Bundle args = new Bundle();
         args.putString("phoneNumber", number);
         args.putString("name", name);
@@ -31,25 +35,28 @@ public class PhoneDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.call,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                ((HomePageActivity)getActivity()).doCall();
+                                phoneEventHandler.doCall();
                             }
                         }
                 )
                 .setNeutralButton(R.string.text,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                ((HomePageActivity)getActivity()).doText();
+                                phoneEventHandler.doText();
                             }
                         }
                 )
                 .setNegativeButton(R.string.cancel,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                ((HomePageActivity)getActivity()).phoneCancel();
+                                phoneEventHandler.phoneCancel();
                             }
                         }
                 )
                 .create();
     }
 
+    public void setPhoneEventHandler(PhoneEventHandler phoneEventHandler) {
+        this.phoneEventHandler = phoneEventHandler;
+    }
 }

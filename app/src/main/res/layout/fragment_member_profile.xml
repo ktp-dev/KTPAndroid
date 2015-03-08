@@ -138,8 +138,8 @@
             android:layout_height="wrap_content"
             android:text="@string/email_button"
             android:id="@+id/prof_email_button"
-
-            android:layout_gravity="center|top"/>
+            android:layout_gravity="center|top"
+            android:onClick="emailButtonPressed"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
