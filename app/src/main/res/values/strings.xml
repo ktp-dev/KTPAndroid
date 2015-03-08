@@ -20,6 +20,7 @@
     <string name="log_out">Log out</string>
     <string name="call">Call</string>
     <string name="text">Text</string>
+    <string name="email">Email</string>
     <string name="cancel">Cancel</string>
 
     <string name="phone_button">P</string>

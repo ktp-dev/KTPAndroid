@@ -18,6 +18,7 @@ import org.json.JSONException;
 
 import java.util.Arrays;
 
+import kappathetapi.ktp.classes.eventhandlers.EmailEventHandler;
 import kappathetapi.ktp.classes.eventhandlers.PhoneEventHandler;
 import kappathetapi.ktp.fragments.MemberProfileFragment;
 import kappathetapi.ktp.fragments.NavigationDrawerFragment;
@@ -62,7 +63,6 @@ public class HomePageActivity extends Activity
                 if(Member.createInstance(jsonArray.getJSONObject(i)) != null) {
                     memberArray[i] = Member.createInstance(jsonArray.getJSONObject(i));
                     if(memberArray[i].getUniqname().equals(uniqname)) {
-                        Log.e("MADE IT: ", "CHYEAHHHHH BOIIII");
                         currentMember = memberArray[i];
                     }
                 }
@@ -161,6 +161,11 @@ public class HomePageActivity extends Activity
     public void phoneButtonPressed(View view) {
         PhoneEventHandler phoneEventHandler = PhoneEventHandler.newInstance(this, lastClickedMember);
         phoneEventHandler.handleEvent(view);
+    }
+
+    public void emailButtonPressed(View view) {
+        EmailEventHandler emailEventHandler = EmailEventHandler.newInstance(this, lastClickedMember);
+        emailEventHandler.handleEvent(view);
     }
 
 }
