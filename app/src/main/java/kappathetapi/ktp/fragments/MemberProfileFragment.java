@@ -1,18 +1,21 @@
 package kappathetapi.ktp.fragments;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -37,6 +40,7 @@ public class MemberProfileFragment extends Fragment {
     private Bitmap bmp;
     private View myView;
     private OnFragmentInteractionListener mListener;
+    private boolean memberIsSet = false;
 
     public static MemberProfileFragment newInstance(JSONObject memberJSON) {
         MemberProfileFragment fragment = new MemberProfileFragment();
@@ -68,10 +72,10 @@ public class MemberProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        if(!memberIsSet) {
+            loadMember();
+        }
         myView = inflater.inflate(R.layout.fragment_member_profile, container, false);
-
-        PhotoRequest request = new PhotoRequest();
-        request.execute(getString(R.string.server_address) + member.getProfPicUrl());
 
         setNameText();
         setYearText();
@@ -88,6 +92,14 @@ public class MemberProfileFragment extends Fragment {
         return myView;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        //Gets the photo from the member's URL then sets it in the view.
+        //Must be in onStart because it needs access to the parent activity's runOnUIThread method
+        PhotoRequest request = new PhotoRequest();
+        request.execute(getString(R.string.server_address) + member.getProfPicUrl());
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -130,9 +142,13 @@ public class MemberProfileFragment extends Fragment {
 
     public void setMember(JSONObject json) {
         member = Member.createInstance(json);
+        memberIsSet = true;
     }
 
-    public void setMember(Member member) { this.member = member; }
+    public void setMember(Member member) {
+        this.member = member;
+        this.memberIsSet = true;
+    }
 
     private class PhotoRequest extends AsyncTask<String, String, Bitmap> {
         @Override
@@ -232,5 +248,16 @@ public class MemberProfileFragment extends Fragment {
     private void setPersonalSiteText() {
         ((TextView)(myView.findViewById(R.id.profile_personal_site))).setText("Personal Site: " +
                 member.getPersonalSite());
+    }
+
+    private void loadMember() {
+        SharedPreferences prefs = getActivity().getSharedPreferences(getString(R.string.app_identifier), Activity.MODE_PRIVATE);
+        String membString = prefs.getString(HomePageActivity.HOME_PAGE_LAST_CLICKED_MEMBER, "");
+        try {
+            JSONObject memberJSON = new JSONObject(membString);
+            member = Member.createInstance(memberJSON);
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

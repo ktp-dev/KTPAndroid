@@ -55,7 +55,7 @@ public class Member {
         try {
             this.firstName = obj.getString("first_name");
         } catch(JSONException e) {
-            e.printStackTrace();
+           //e.printStackTrace();
         }
     }
 
@@ -71,7 +71,7 @@ public class Member {
         try {
             this.lastName = obj.getString("last_name");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -87,7 +87,7 @@ public class Member {
         try {
             this.uniqname = obj.getString("uniqname");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -103,7 +103,7 @@ public class Member {
         try {
             this.year = obj.getInt("year");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -119,7 +119,7 @@ public class Member {
         try {
             this.major = obj.getString("major");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -135,7 +135,7 @@ public class Member {
         try {
             this.gender = obj.getString("gender");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -151,7 +151,7 @@ public class Member {
         try {
             this.hometown = obj.getString("hometown");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -167,7 +167,7 @@ public class Member {
         try {
             this.biography = obj.getString("biography");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -183,7 +183,7 @@ public class Member {
         try {
             this.profPicUrl = obj.getString("prof_pic_url");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -199,7 +199,7 @@ public class Member {
         try {
             this.email = obj.getString("email");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -215,7 +215,7 @@ public class Member {
         try {
             this.phoneNumber = obj.getString("phone_number");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -231,7 +231,7 @@ public class Member {
         try {
             this.twitter = obj.getString("twitter");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -247,7 +247,7 @@ public class Member {
         try {
             this.facebook = obj.getString("facebook");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -263,7 +263,7 @@ public class Member {
         try {
             this.linkedin = obj.getString("linkedin");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -279,7 +279,7 @@ public class Member {
         try {
             this.personalSite = obj.getString("personal_site");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -295,7 +295,7 @@ public class Member {
         try {
             this.pledgeClass = obj.getString("pledge_class");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -311,7 +311,7 @@ public class Member {
         try {
             this.membershipStatus = obj.getString("membership_status");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -327,7 +327,7 @@ public class Member {
         try {
             this.role = obj.getString("role");
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -343,7 +343,7 @@ public class Member {
         try {
             serviceHours = json.getDouble("service_hours");
         } catch (JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -359,7 +359,7 @@ public class Member {
         try {
             proDevEvents = json.getInt("pro_dev_events");
         } catch (JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -388,7 +388,7 @@ public class Member {
             json.put("service_hours", getServiceHours());
             json.put("pro_dev_events", getProDevEvents());
         } catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return json;
     }
