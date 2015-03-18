@@ -27,7 +27,6 @@ import java.util.concurrent.ExecutionException;
  */
 public class FacebookIDRequest {
     static InputStream is = null;
-    static JSONObject jObj = null;
     static String response = "";
     private HttpRequestBase httpRequest;
     public FacebookIDRequest() {
@@ -38,7 +37,7 @@ public class FacebookIDRequest {
         String response = null;
         Request myTask = new Request();
         try{
-            response = myTask.execute(url).get();
+            response = myTask.execute(url).get(); //run async task to get response from facebook
         }
         catch (InterruptedException e) {
             e.printStackTrace();
@@ -54,14 +53,17 @@ public class FacebookIDRequest {
         String fullUrl = urlString;
 
         try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            httpRequest = new HttpGet(fullUrl);
+            DefaultHttpClient httpClient = new DefaultHttpClient(); //set up client
+            httpRequest = new HttpGet(fullUrl); //set up get request
+            //These are pretty standard headers, the other standard header is "x-token" or something
+            //there's an example in MembersRequest
             httpRequest.setHeader("Content-Type", "application/json");
             httpRequest.setHeader("Accept", "application/json");
 
-            HttpResponse httpResponse = httpClient.execute(httpRequest);
-            HttpEntity httpEntity = httpResponse.getEntity();
-            is = httpEntity.getContent();
+            //Could be done in one line, but this is a little more clear
+            HttpResponse httpResponse = httpClient.execute(httpRequest); //Do magic, get response
+            HttpEntity httpEntity = httpResponse.getEntity(); //Actual response
+            is = httpEntity.getContent(); //get input stream, which is what we actually read from
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -72,7 +74,7 @@ public class FacebookIDRequest {
         }
 
         try {
-            getStringFromInputStream();
+            getStringFromInputStream(); //Get string from "is"
         } catch (Exception e) {
             Log.e("Buffer Error", "Error converting result " + e.toString());
         }
@@ -80,6 +82,7 @@ public class FacebookIDRequest {
         return response;
     }
 
+    //Parses input stream from server into a format easily read by JSON
     private void getStringFromInputStream() throws UnsupportedEncodingException, IOException{
         BufferedReader reader = new BufferedReader(new InputStreamReader(
                 is, "UTF-8"));
@@ -92,6 +95,7 @@ public class FacebookIDRequest {
         response = sb.toString();
         Log.e("JSON", response);
     }
+
     private class Request extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... args) {

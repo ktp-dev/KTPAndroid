@@ -18,6 +18,7 @@ public class FacebookEventHandler {
     private Activity myActivity;
     private Member lastClickedMember;
 
+    //Set myActivity and lastClicked member
     public static FacebookEventHandler newInstance(Activity activity, Member lastClickedMember) {
         FacebookEventHandler facebookEventHandler = new FacebookEventHandler();
         facebookEventHandler.setMyActivity(activity);
@@ -35,6 +36,8 @@ public class FacebookEventHandler {
         newFragment.show(myActivity.getFragmentManager(), "dialog");
     }
 
+    //Attemps to open Facebook app.
+    //If the app is not found, then we open up the facbook page with a browser.
     public void doFacebook() {
         if(lastClickedMember.getEmail() == null ||
                 lastClickedMember.getEmail().compareTo("") == 0) {
@@ -56,6 +59,7 @@ public class FacebookEventHandler {
         }
     }
 
+    //Dialog will close itself, so do nothing.
     public void facebookCancel() {
 
     }

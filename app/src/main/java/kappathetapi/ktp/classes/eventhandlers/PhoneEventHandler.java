@@ -19,14 +19,17 @@ import kappathetapi.ktp.dialogs.PhoneDialogFragment;
  */
 public class PhoneEventHandler {
     private Activity myActivity;
-    private Member lastClickedMember;
+    private Member receivingMember;
 
+    //Set myActivity and receivingMember
     public static PhoneEventHandler newInstance(Activity activity, Member lastClickedMember) {
         PhoneEventHandler phoneEventHandler = new PhoneEventHandler();
         phoneEventHandler.setMyActivity(activity);
-        phoneEventHandler.setLastClickedMember(lastClickedMember);
+        phoneEventHandler.setReceivingMember(lastClickedMember);
         return phoneEventHandler;
     }
+
+    //Called when button is pressed, creates dialog for User to choose whether to call text or cancel
     public void handleEvent(View view) {
         Uri number = Uri.parse("tel:0000000000");
         Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
@@ -37,29 +40,29 @@ public class PhoneEventHandler {
     }
 
     void showDialog() {
-        String name = lastClickedMember.getFirstName();
-        String number = lastClickedMember.getPhoneNumber();
+        String name = receivingMember.getFirstName();
+        String number = receivingMember.getPhoneNumber();
         DialogFragment newFragment = PhoneDialogFragment.newInstance(number, name, this);
         newFragment.show(myActivity.getFragmentManager(), "dialog");
     }
 
     public void doCall() {
-        if(lastClickedMember.getPhoneNumber() == null ||
-                lastClickedMember.getPhoneNumber().compareTo("") == 0) {
+        if(receivingMember.getPhoneNumber() == null ||
+                receivingMember.getPhoneNumber().compareTo("") == 0) {
             Toast.makeText(myActivity.getApplication(), "Number not set", Toast.LENGTH_LONG).show();
         } else {
-            Uri number = Uri.parse("tel:" + lastClickedMember.getPhoneNumber());
+            Uri number = Uri.parse("tel:" + receivingMember.getPhoneNumber());
             Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
             myActivity.startActivity(callIntent);
         }
     }
 
     public void doText() {
-        if(lastClickedMember.getPhoneNumber() == null ||
-                lastClickedMember.getPhoneNumber().compareTo("") == 0) {
+        if(receivingMember.getPhoneNumber() == null ||
+                receivingMember.getPhoneNumber().compareTo("") == 0) {
             Toast.makeText(myActivity.getApplication(), "Number not set", Toast.LENGTH_LONG).show();
         } else {
-            Uri number = Uri.parse("sms:" + lastClickedMember.getPhoneNumber());
+            Uri number = Uri.parse("sms:" + receivingMember.getPhoneNumber());
             Intent callIntent = new Intent(Intent.ACTION_VIEW, number);
             myActivity.startActivity(callIntent);
         }
@@ -73,7 +76,7 @@ public class PhoneEventHandler {
         myActivity = activity;
     }
 
-    public void setLastClickedMember(Member member) {
-        lastClickedMember = member;
+    public void setReceivingMember(Member member) {
+        receivingMember = member;
     }
 }

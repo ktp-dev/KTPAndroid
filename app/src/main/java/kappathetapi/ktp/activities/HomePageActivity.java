@@ -39,35 +39,34 @@ public class HomePageActivity extends Activity
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-    private ProfileListFragment mProfileListFragment;
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
-    private CharSequence mTitle;
+    private CharSequence mTitle; //Title displayed at top left of screen (ex: Members, HomePageActivity, etc.)
     public static JSONArray jsonArray = null;
     public static Member[] memberArray;
     public static String HOME_PAGE_JSON = "com.kappathetapi.app.HOME_PAGE_JSON";
     public static String HOME_PAGE_UNIQNAME = "com.kappathetapi.app.HOME_PAGE_UNIQNAME";
     public static String HOME_PAGE_LAST_CLICKED_MEMBER = "com.kappathetapi.app.HOME_PAGE_LAST_CLICKED_MEMBER";
-    private String uniqname = "";
-    private String lastClickedUniqname = "";
-    public Member currentMember = new Member();
-    public Member lastClickedMember;
+    private String uniqname = "";//Currently logged in member's uniqname
+    public Member currentMember = new Member(); //Currently logged in member
+    public Member lastClickedMember; //The last member that was picked from member list under members
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
-        //Get jsonArray of members from intent passed by LoginActivity
         Intent intent = getIntent();
         SharedPreferences prefs = getSharedPreferences(getString(R.string.app_identifier), MODE_PRIVATE);
+        //Either get the user's uniqname from Login activity, or get it from storage
         if(intent.hasExtra(LoginActivity.MEMBER_UNIQNAME)) {
             uniqname = intent.getStringExtra(LoginActivity.MEMBER_UNIQNAME);
         } else {
             uniqname = prefs.getString(HOME_PAGE_UNIQNAME, "");
         }
+        //Either get the List of Members from LoginActivity or get it from storage
         try {
             if(intent.hasExtra(LoginActivity.JSON_ARRAY)) {
                 jsonArray = new JSONArray(intent.getStringExtra(LoginActivity.JSON_ARRAY));
@@ -78,6 +77,7 @@ public class HomePageActivity extends Activity
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -109,6 +109,9 @@ public class HomePageActivity extends Activity
         }
     }
 
+    //Use this in any fragment that can be accessed directly from the navigation drawer
+    //use ((HomePageActivity) activity).onSectionAttached(getString(R.string.YOUR_FRAG_TITLE));
+    //in your fragment's OnAttach method
     public void onSectionAttached(String fragmentName) {
         mTitle = fragmentName;
     }
@@ -149,12 +152,13 @@ public class HomePageActivity extends Activity
         return super.onOptionsItemSelected(item);
     }
 
+    //Method called when a member's name is clicked from the list of members.
+    //Sets lastClickedMember and switches to a MemberProfileFragment for that member
     @Override
     public void onSelection(int pos) {
         FragmentManager fragmentManager = getFragmentManager();
 
         lastClickedMember = memberArray[pos];
-        lastClickedUniqname = lastClickedMember.getUniqname();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, MemberProfileFragment.newInstance(lastClickedMember))
                 .commit();
@@ -167,21 +171,30 @@ public class HomePageActivity extends Activity
 
     }
 
+    //ALL OF THESE BUTTON PRESSES LEAVE THE APP
+    //Called from MemberProfileFragment when the phone button is pressed.
+    //Creates a dialog that asks if you want to call n stuff
     public void phoneButtonPressed(View view) {
         PhoneEventHandler phoneEventHandler = PhoneEventHandler.newInstance(this, lastClickedMember);
         phoneEventHandler.handleEvent(view);
     }
 
+    //Called from MemberProfileFragment when the email button is pressed.
+    //Creates a dialog that asks if you want to email
     public void emailButtonPressed(View view) {
         EmailEventHandler emailEventHandler = EmailEventHandler.newInstance(this, lastClickedMember);
         emailEventHandler.handleEvent(view);
     }
 
+    //Called from MemberProfileFragment when the twitter button is pressed.
+    //Creates a dialog that asks if you want to twitter n stuff
     public void twitterButtonPressed(View view) {
         TwitterEventHandler twitterEventHandler = TwitterEventHandler.newInstance(this, lastClickedMember);
         twitterEventHandler.handleEvent(view);
     }
 
+    //Called from MemberProfileFragment when the facebook button is pressed.
+    //Creates a dialog that asks if you want to facebook n stuff
     public void facebookButtonPressed(View view) {
         FacebookEventHandler facebookEventHandler = FacebookEventHandler.newInstance(this, lastClickedMember);
         facebookEventHandler.handleEvent(view);
@@ -213,6 +226,7 @@ public class HomePageActivity extends Activity
         makeMemberArrayFromJSON();
     }
 
+    //Uses jsonArray to set memberArray
     private void makeMemberArrayFromJSON() {
         try {
             memberArray = new Member[jsonArray.length()];

@@ -419,6 +419,7 @@ public class Member {
         return member;
     }
 
+    //Comparators for the sortings :DDDDDD
     public static class MemberNameComparator implements Comparator<Member> {
 
         @Override

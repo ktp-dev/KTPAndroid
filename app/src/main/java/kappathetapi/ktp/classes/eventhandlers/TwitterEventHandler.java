@@ -21,6 +21,7 @@ public class TwitterEventHandler {
     private Activity myActivity;
     private Member lastClickedMember;
 
+    //Return an instance with activity and lastClicked member set.
     public static TwitterEventHandler newInstance(Activity activity, Member lastClickedMember) {
         TwitterEventHandler twitterEventHandler = new TwitterEventHandler();
         twitterEventHandler.setMyActivity(activity);

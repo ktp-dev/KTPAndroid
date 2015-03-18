@@ -26,10 +26,9 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class MembersRequest {
-    public enum RequestType{POST, GET, PUT, DELETE}
-    public enum RequestPath{MEMBERS, LOGIN, PITCHES}
+    public enum RequestType{POST, GET, PUT, DELETE} //Used to set request type later
+    public enum RequestPath{MEMBERS, LOGIN, PITCHES} //Used to access some default routes
     static InputStream is = null;
-    static JSONObject jObj = null;
     static String response = "";
     private HttpRequestBase httpRequest;
     public MembersRequest() {
@@ -38,13 +37,13 @@ public class MembersRequest {
     public String getResponseFromUrl(String urlString, List<NameValuePair> params, RequestPath requestPath,
                                      RequestType requestType) {
         String fullUrl = urlString + pathToString(requestPath);
-        //"http://35.2.181.254:8080"
 
         try {
             DefaultHttpClient httpClient = new DefaultHttpClient();
             setRequestType(requestType, fullUrl);
             setDefaultHeaders();
 
+            //Only put and post have bodies, because they're the only commands that provide info to the server
             if(requestType == RequestType.PUT || requestType == RequestType.POST) {
                 setBody(params, requestType);
             }
