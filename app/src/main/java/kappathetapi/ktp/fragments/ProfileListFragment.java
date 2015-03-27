@@ -42,7 +42,6 @@ public class ProfileListFragment extends ListFragment {
      */
     private ListAdapter mAdapter;
 
-    // TODO: Rename and change types of parameters
     public static ProfileListFragment newInstance(int sectionNumber) {
         ProfileListFragment fragment = new ProfileListFragment();
         Bundle args = new Bundle();

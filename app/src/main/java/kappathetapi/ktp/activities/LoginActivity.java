@@ -1,7 +1,9 @@
 package kappathetapi.ktp.activities;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,10 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kappathetapi.ktp.R;
+import kappathetapi.ktp.fragments.ChangePasswordFragment;
 import kappathetapi.ktp.tasks.MembersRequest;
 
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends Activity implements ChangePasswordFragment.OnFragmentInteractionListener{
     EditText username, password;
     String usernameString, passwordString, accountString = "";
     List<NameValuePair> params;
@@ -159,9 +162,27 @@ public class LoginActivity extends Activity {
         return 3;
     }
 
+    //TODO: FINISH THIS FUCKING SHIT
+    @Override
+    public int attemptPasswordChange(String username, String oldPassword, String newPassword, String newPassword1) {
+        return 0;
+    }
+
+    @Override
+    public void backToLogin() {
+
+    }
+
+
     //Empty exception class made to help deal with incorrect username(uniqname) input
     private class WrongUniqnameException extends Throwable {
 
     }
 
+    public void startChangePasswordFragment(View view) {
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, ChangePasswordFragment.newInstance())
+                .commit();
+    }
 }
