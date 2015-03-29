@@ -53,6 +53,13 @@ public class LoginFragment extends Fragment {
                 informUser(v, loginSuccess);
             }
         });
+        Button changePasswordButton = (Button)(view.findViewById(R.id.login_button_cp));
+        changePasswordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.startChangePasswordFragment();
+            }
+        });
 
         errorText = (TextView)(view.findViewById(R.id.failed_login_text));
 
