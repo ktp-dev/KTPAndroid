@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutionException;
 
 public class MembersRequest {
     public enum RequestType{POST, GET, PUT, DELETE} //Used to set request type later
-    public enum RequestPath{MEMBERS, LOGIN, PITCHES} //Used to access some default routes
+    public enum RequestPath{MEMBERS, LOGIN, PITCHES, CHANGE_PASSWORD} //Used to access some default routes
     static InputStream is = null;
     static String response = "";
     private HttpRequestBase httpRequest;
@@ -122,6 +122,8 @@ public class MembersRequest {
                 return "/api/login/";
             case PITCHES:
                 return "/api/pitches/";
+            case CHANGE_PASSWORD:
+                return "/api/changePassword";
         }
         return "";
     }

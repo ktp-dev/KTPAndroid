@@ -1,13 +1,16 @@
 package kappathetapi.ktp.fragments;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import kappathetapi.ktp.R;
 
@@ -22,6 +25,8 @@ import kappathetapi.ktp.R;
 public class ChangePasswordFragment extends Fragment implements View.OnClickListener {
 
     private OnFragmentInteractionListener mListener;
+
+    TextView errorText;
 
     public static ChangePasswordFragment newInstance() {
         ChangePasswordFragment fragment = new ChangePasswordFragment();
@@ -41,8 +46,28 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_change_password, container, false);
+        View view = inflater.inflate(R.layout.fragment_change_password, container, false);
+        Button changePasswordButton = (Button)(view.findViewById(R.id.cp_change_password_button));
+        changePasswordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int passwordChanged = mListener.performPasswordChange(
+                        ((EditText) (((View)(v.getParent())).findViewById(R.id.cp_username_edit_text))).getText().toString().trim(),
+                        ((EditText) (((View)(v.getParent())).findViewById(R.id.cp_old_password_edit_text))).getText().toString().trim(),
+                        ((EditText) (((View)(v.getParent())).findViewById(R.id.cp_new_password_edit_text))).getText().toString().trim(),
+                        ((EditText) (((View)(v.getParent())).findViewById(R.id.cp_new_password_edit_text1))).getText().toString().trim());
+                informUser(((View)(v.getParent())), passwordChanged);
+            }
+        });
+
+        Button backToLoginButton = (Button)(view.findViewById(R.id.cp_back_to_login_button));
+        backToLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.backToLogin();
+            }
+        });
+        return view;
     }
 
     @Override
@@ -66,14 +91,10 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.cp_change_password_button:
-                mListener.attemptPasswordChange(
-                        ((EditText)(v.findViewById(R.id.cp_username_edit_text))).getText().toString().trim(),
-                        ((EditText)(v.findViewById(R.id.cp_old_password_edit_text))).getText().toString().trim(),
-                        ((EditText)(v.findViewById(R.id.cp_new_password_edit_text))).getText().toString().trim(),
-                        ((EditText)(v.findViewById(R.id.cp_new_password_edit_text1))).getText().toString().trim());
+
                 break;
             case R.id.cp_back_to_login_button:
-                mListener.backToLogin();
+
                 break;
         }
     }
@@ -90,10 +111,28 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
      */
     public interface OnFragmentInteractionListener {
 
-        public int attemptPasswordChange(String username, String oldPassword,
+        public int performPasswordChange(String username, String oldPassword,
                                          String newPassword, String newPassword1);
 
         public void backToLogin();
+    }
+
+    private void informUser(View view, int passwordChanged) {
+        errorText = (TextView)view.findViewById(R.id.cp_error_text);
+        switch(passwordChanged) {
+            case 0:
+                Toast.makeText(getActivity().getApplicationContext(),"success!", Toast.LENGTH_LONG);
+                break;
+            case 1:
+                errorText.setText("Account not found. You in the right place, bruh?");
+                break;
+            case 2:
+                errorText.setText("Invalid password. What time is it? Bad O'Clock!");
+            case 4:
+                errorText.setText("How hard is it to type the same thing twice?");
+            default:
+                errorText.setText("Idk what's going on...\nContact sjdallst@umich.edu");
+        }
     }
 
 }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -23,10 +24,12 @@ import java.util.List;
 
 import kappathetapi.ktp.R;
 import kappathetapi.ktp.fragments.ChangePasswordFragment;
+import kappathetapi.ktp.fragments.LoginFragment;
 import kappathetapi.ktp.tasks.MembersRequest;
 
 
-public class LoginActivity extends Activity implements ChangePasswordFragment.OnFragmentInteractionListener{
+public class LoginActivity extends Activity implements ChangePasswordFragment.OnFragmentInteractionListener,
+                                                        LoginFragment.OnFragmentInteractionListener{
     EditText username, password;
     String usernameString, passwordString, accountString = "";
     List<NameValuePair> params;
@@ -39,6 +42,10 @@ public class LoginActivity extends Activity implements ChangePasswordFragment.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.login_container, LoginFragment.newInstance())
+                .commit();
 
         username = (EditText)findViewById(R.id.username_text);
         password = (EditText)findViewById(R.id.password_text);
@@ -83,37 +90,137 @@ public class LoginActivity extends Activity implements ChangePasswordFragment.On
         return super.onOptionsItemSelected(item);
     }
 
-    public void performLogin(View view) {
-        //Need to initialize error text, so it can be modified in switch statement
-        TextView errorText = (TextView)(findViewById(R.id.failed_login_text));
+    @Override
+    public int performLogin(String username, String password) {
 
-        //Attempt to login. Set an error message if necessary
-        switch(attemptLogin(view)) {
-            case 0:
-                //Switch to HomePageActivity on successful login
-                Intent homePageIntent = new Intent(LoginActivity.this,HomePageActivity.class);
-                homePageIntent.putExtra(JSON_ARRAY, jsonArray.toString());
-                homePageIntent.putExtra(MEMBER_UNIQNAME, usernameString);
-                startActivity(homePageIntent);
-                finish();
-                break;
-            case 1:
-                errorText.setText("Account not found. You in the right place, bruh?");
-                break;
-            case 2:
-                errorText.setText("Invalid password. What time is it? Bad O'Clock!");
-            default:
-                errorText.setText("Idk what's going on...\nContact sjdallst@umich.edu");
+        usernameString = username;
+        passwordString = password;
+
+        int canLogin = 0;
+        //Attempts to match credentials to member, returns 1 if account is not found
+        try {
+            findAndSetAccount();
+            //if findAndSetAccount throws an error, don't attempt to login
+            canLogin = attemptLogin();
+        } catch(WrongUniqnameException e) {
+            canLogin = 1;
         }
+
+        if(canLogin == 0) {
+            Intent homePageIntent = new Intent(LoginActivity.this,HomePageActivity.class);
+            homePageIntent.putExtra(JSON_ARRAY, jsonArray.toString());
+            homePageIntent.putExtra(MEMBER_UNIQNAME, usernameString);
+            startActivity(homePageIntent);
+            finish();
+        }
+
+        return canLogin;
     }
 
-    public ArrayList<NameValuePair> getCredentials(View view) throws WrongUniqnameException {
-        ArrayList<NameValuePair> params = new ArrayList<>();
+    public int attemptLogin() {
+        membersRequest = new MembersRequest();
+        params = new ArrayList<>();
+        params.add(new BasicNameValuePair("account", accountString));
+        params.add(new BasicNameValuePair("password", passwordString));
+        //Attempt a login. Return based on response.
+        String response = membersRequest.getResponse(getString(R.string.server_address), MembersRequest.RequestPath.LOGIN,
+                MembersRequest.RequestType.POST, params);
+        return loginResponseToInt(response);
+    }
 
-        //Get username and password from User
-        usernameString = username.getText().toString().trim();
-        passwordString = password.getText().toString().trim();
+    private int attemptPasswordChange(String newPassword, String newPassword1) {
+        membersRequest = new MembersRequest();
+        params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("account", accountString));
+        params.add(new BasicNameValuePair("oldPassword", passwordString));
+        params.add(new BasicNameValuePair("newPassword", newPassword));
+        params.add(new BasicNameValuePair("confirmPassword", newPassword1));
 
+        String response = membersRequest.getResponse(getString(R.string.server_address),
+                MembersRequest.RequestPath.CHANGE_PASSWORD, MembersRequest.RequestType.POST, params);
+
+        return passwordChangeResponseToInt(response);
+    }
+
+    private int passwordChangeResponseToInt(String response) {
+        if(response.trim().compareTo("password changed") == 0) {
+            return 0;
+        }
+        if(response.trim().compareTo("account not found") == 0) {
+            return 1;
+        }
+        if(response.trim().compareTo("invalid password") == 0) {
+            return 2;
+        }
+        if(response.trim().compareTo("passwords dont match") == 0) {
+            return 4;
+        }
+
+        Log.e("Unrecognized response", response);
+        return 3;
+    }
+
+    //TODO: FINISH THIS FUCKING SHIT
+    @Override
+    public int performPasswordChange(String username, String oldPassword, String newPassword, String newPassword1) {
+        usernameString = username;
+        passwordString = oldPassword;
+        int canChangePassword = 0;
+        try {
+            findAndSetAccount();
+        } catch (WrongUniqnameException e) {
+            canChangePassword = 1;
+        }
+
+        if(canChangePassword == 0) {
+            canChangePassword = attemptLogin();
+        }
+
+        if(canChangePassword == 0) {
+            canChangePassword = attemptPasswordChange(newPassword, oldPassword);
+        }
+
+        return canChangePassword;
+    }
+
+    @Override
+    public void backToLogin() {
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+        .replace(R.id.login_container, LoginFragment.newInstance())
+        .commit();
+    }
+
+
+    //Empty exception class made to help deal with incorrect username(uniqname) input
+    private class WrongUniqnameException extends Throwable {
+
+    }
+
+    @Override
+    public void startChangePasswordFragment() {
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.login_container, ChangePasswordFragment.newInstance())
+                .commit();
+    }
+
+    private int loginResponseToInt(String response) {
+        if(response.trim().compareTo("success") == 0) {
+            return 0;
+        }
+        if(response.trim().compareTo("account not found") == 0) {
+            return 1;
+        }
+        if(response.trim().compareTo("invalid password") == 0) {
+            return 2;
+        }
+
+        Log.e("Unrecognized response", response);
+        return 3;
+    }
+
+    private void findAndSetAccount() throws WrongUniqnameException {
         //Get accountID by searching through uniqnames
         //accountID is used for POST request to server
         boolean found = false;
@@ -131,58 +238,5 @@ public class LoginActivity extends Activity implements ChangePasswordFragment.On
         if(!found) {
             throw new WrongUniqnameException();
         }
-
-        //Set paramaters for server request
-        params.add(new BasicNameValuePair("account", accountString));
-        params.add(new BasicNameValuePair("password", passwordString));
-        return params;
-    }
-
-    public int attemptLogin(View view) {
-        //Attempts to match credentials to member, returns 1 if account is not found
-        try {
-            params = getCredentials(view);
-        } catch(WrongUniqnameException e) {
-            return 1;
-        }
-        //Attempt a login. Return based on response.
-        String response = membersRequest.getResponse(getString(R.string.server_address), MembersRequest.RequestPath.LOGIN,
-                MembersRequest.RequestType.POST, params);
-        if(response.trim().compareTo("success") == 0) {
-            return 0;
-        }
-        if(response.trim().compareTo("account not found") == 0) {
-            return 1;
-        }
-        if(response.trim().compareTo("invalid password") == 0) {
-            return 2;
-        }
-
-        Log.e("Unrecognized response", response);
-        return 3;
-    }
-
-    //TODO: FINISH THIS FUCKING SHIT
-    @Override
-    public int attemptPasswordChange(String username, String oldPassword, String newPassword, String newPassword1) {
-        return 0;
-    }
-
-    @Override
-    public void backToLogin() {
-
-    }
-
-
-    //Empty exception class made to help deal with incorrect username(uniqname) input
-    private class WrongUniqnameException extends Throwable {
-
-    }
-
-    public void startChangePasswordFragment(View view) {
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, ChangePasswordFragment.newInstance())
-                .commit();
     }
 }
