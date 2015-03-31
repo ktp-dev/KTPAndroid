@@ -208,8 +208,12 @@ public class HomePageActivity extends Activity
             jArray.put(memberArray[i].toJSON());
         }
         prefs.edit().putString(HOME_PAGE_JSON, jArray.toString()).apply();
-        prefs.edit().putString(HOME_PAGE_UNIQNAME, uniqname).apply();
-        prefs.edit().putString(HOME_PAGE_LAST_CLICKED_MEMBER, lastClickedMember.toJSON().toString()).apply();
+        if(uniqname != null) {
+            prefs.edit().putString(HOME_PAGE_UNIQNAME, uniqname).apply();
+        }
+        if(lastClickedMember != null) {
+            prefs.edit().putString(HOME_PAGE_LAST_CLICKED_MEMBER, lastClickedMember.toJSON().toString()).apply();
+        }
         super.onStop();
     }
 

@@ -7,6 +7,7 @@
     <string name="username">username</string>
     <string name="password">password</string>
     <string name="old_password">old password</string>
+    <string name="new_password">new password</string>
     <string name="login">login</string>
     <string name="change_password">change password</string>
     <string name="title_activity_home_page">HomePageActivity</string>
@@ -42,5 +43,6 @@
     <string name="title_activity_horizontal_slide">HorizontalSlideActivity</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
 
 </resources>

@@ -3,6 +3,7 @@ package kappathetapi.ktp.activities;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -50,15 +51,18 @@ public class LoginActivity extends Activity implements ChangePasswordFragment.On
         username = (EditText)findViewById(R.id.username_text);
         password = (EditText)findViewById(R.id.password_text);
         membersRequest = new MembersRequest();
+
+        SharedPreferences prefs = this.getSharedPreferences(getString(R.string.app_identifier), MODE_PRIVATE);
         try {
             //Check to see if there is a saved string of members
             //There will be a saved string of members if returning to LoginActivity from
             //another Activity within the app
-            if (savedInstanceState != null &&
-                    savedInstanceState.getString(JSON_ARRAY, "").compareTo("") != 0) {
-                jsonArray = new JSONArray(savedInstanceState.getString(JSON_ARRAY));
+            if (prefs != null &&
+                    prefs.getString(JSON_ARRAY, "").compareTo("") != 0) {
+                jsonArray = new JSONArray(prefs.getString(JSON_ARRAY, ""));
             } else {
                 //Get members from server
+                Log.e("DAFUCK?: ", "GETTING MEMBERS FROM SERVER? DAFUCK?");
                 jsonArray = new JSONArray(membersRequest.getResponse(getString(R.string.server_address),
                         MembersRequest.RequestPath.MEMBERS, MembersRequest.RequestType.GET, params));
             }
@@ -160,7 +164,6 @@ public class LoginActivity extends Activity implements ChangePasswordFragment.On
         return 3;
     }
 
-    //TODO: FINISH THIS FUCKING SHIT
     @Override
     public int performPasswordChange(String username, String oldPassword, String newPassword, String newPassword1) {
         usernameString = username;
