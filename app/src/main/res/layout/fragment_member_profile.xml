@@ -147,10 +147,6 @@
             android:id="@+id/prof_twitter_button"
             android:layout_gravity="center|top"
             android:onClick="twitterButtonPressed"/>
-    </LinearLayout>
-
-    <LinearLayout android:layout_columnSpan="3"
-        android:layout_row="12">
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -158,12 +154,19 @@
             android:id="@+id/prof_facebook_button"
             android:layout_gravity="center|top"
             android:onClick="facebookButtonPressed"/>
+    </LinearLayout>
+
+    <LinearLayout android:layout_columnSpan="3"
+        android:layout_row="12">
+
+        <!--
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/linkedin_button"
             android:id="@+id/prof_linkedin_button"
             android:layout_gravity="center|top"/>
+        -->
     </LinearLayout>
 
 </GridLayout>
