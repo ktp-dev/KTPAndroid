@@ -19,6 +19,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class LoginActivity extends Activity implements ChangePasswordFragment.On
                                                         LoginFragment.OnFragmentInteractionListener{
     EditText username, password;
     String usernameString, passwordString, accountString = "";
-    List<NameValuePair> params;
+    JSONObject params = null;
     MembersRequest membersRequest;
     private JSONArray jsonArray = new JSONArray();
     public final static String JSON_ARRAY = "com.kappathetapi.KTP.JSONArray";
@@ -62,7 +63,6 @@ public class LoginActivity extends Activity implements ChangePasswordFragment.On
                 jsonArray = new JSONArray(prefs.getString(JSON_ARRAY, ""));
             } else {
                 //Get members from server
-                Log.e("DAFUCK?: ", "GETTING MEMBERS FROM SERVER? DAFUCK?");
                 jsonArray = new JSONArray(membersRequest.getResponse(getString(R.string.server_address),
                         MembersRequest.RequestPath.MEMBERS, MembersRequest.RequestType.GET, params));
             }
@@ -123,9 +123,13 @@ public class LoginActivity extends Activity implements ChangePasswordFragment.On
 
     public int attemptLogin() {
         membersRequest = new MembersRequest();
-        params = new ArrayList<>();
-        params.add(new BasicNameValuePair("account", accountString));
-        params.add(new BasicNameValuePair("password", passwordString));
+        params = new JSONObject();
+        try {
+            params.put("account", accountString);
+            params.put("password", passwordString);
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
         //Attempt a login. Return based on response.
         String response = membersRequest.getResponse(getString(R.string.server_address), MembersRequest.RequestPath.LOGIN,
                 MembersRequest.RequestType.POST, params);
@@ -134,11 +138,15 @@ public class LoginActivity extends Activity implements ChangePasswordFragment.On
 
     private int attemptPasswordChange(String newPassword, String newPassword1) {
         membersRequest = new MembersRequest();
-        params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("account", accountString));
-        params.add(new BasicNameValuePair("oldPassword", passwordString));
-        params.add(new BasicNameValuePair("newPassword", newPassword));
-        params.add(new BasicNameValuePair("confirmPassword", newPassword1));
+        params = new JSONObject();
+        try {
+            params.put("account", accountString);
+            params.put("oldPassword", passwordString);
+            params.put("newPassword", newPassword);
+            params.put("confirmPassword", newPassword1);
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
 
         String response = membersRequest.getResponse(getString(R.string.server_address),
                 MembersRequest.RequestPath.CHANGE_PASSWORD, MembersRequest.RequestType.POST, params);

@@ -34,13 +34,12 @@ public class MembersRequest {
     public MembersRequest() {
         httpRequest = new HttpPut("");//default value so httpRequest is not empty.
     }
-    public String getResponseFromUrl(String urlString, List<NameValuePair> params, RequestPath requestPath,
+    public String getResponseFromUrl(String urlString, JSONObject params,
                                      RequestType requestType) {
-        String fullUrl = urlString + pathToString(requestPath);
 
         try {
             DefaultHttpClient httpClient = new DefaultHttpClient();
-            setRequestType(requestType, fullUrl);
+            setRequestType(requestType, urlString);
             setDefaultHeaders();
 
             //Only put and post have bodies, because they're the only commands that provide info to the server
@@ -70,9 +69,18 @@ public class MembersRequest {
     }
 
     public String getResponse(String url, RequestPath requestPath, RequestType requestType,
-                              List<NameValuePair> params) {
-        String response = null;
+                              JSONObject params) {
         Params param = new Params(url, requestPath, requestType, params);
+        return getResponse(param);
+    }
+
+    public String getResponse(String url, RequestPath requestPath, RequestType requestType,
+                              JSONObject params, String accountId) {
+        Params param = new Params(url, requestPath, requestType, params, accountId);
+        return getResponse(param);
+    }
+    private String getResponse(Params param) {
+        String response = null;
         Request myTask = new Request();
         try{
             response = myTask.execute(param).get();
@@ -83,21 +91,31 @@ public class MembersRequest {
         catch (ExecutionException e){
             e.printStackTrace();
         }
-
         return response;
     }
     private static class Params {
         String url;
         RequestPath requestPath;
         RequestType requestType;
-        List<NameValuePair> params;
+        JSONObject params;
+        String accountId;
 
         Params(String url, RequestPath requestPath, RequestType requestType,
-               List<NameValuePair> params) {
+               JSONObject params) {
             this.url = url;
             this.requestPath = requestPath;
             this.requestType = requestType;
             this.params = params;
+            this.accountId = "";
+        }
+
+        Params(String url, RequestPath requestPath, RequestType requestType,
+               JSONObject params, String accountId) {
+            this.url = url;
+            this.requestPath = requestPath;
+            this.requestType = requestType;
+            this.params = params;
+            this.accountId = accountId;
         }
     }
     private class Request extends AsyncTask<Params, String, String> {
@@ -105,8 +123,8 @@ public class MembersRequest {
         protected String doInBackground(Params... args) {
             MembersRequest request = new MembersRequest();
             String response = null;
-            response = request.getResponseFromUrl(args[0].url, args[0].params, args[0].requestPath,
-                    args[0].requestType);
+            String fullUrl = args[0].url + pathToString(args[0].requestPath) + args[0].accountId;
+            response = request.getResponseFromUrl(fullUrl, args[0].params, args[0].requestType);
             return response;
         }
         @Override
@@ -148,16 +166,8 @@ public class MembersRequest {
         httpRequest.setHeader("Content-Type", "application/json");
         httpRequest.setHeader("Accept", "application/json");
     }
-    private void setBody(List<NameValuePair> params, RequestType requestType) throws UnsupportedEncodingException{
-        JSONObject jsonObject = new JSONObject();
-        try {
-            for (NameValuePair p : params) {
-                jsonObject.put(p.getName(), p.getValue());
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        StringEntity stringEntity = new StringEntity(jsonObject.toString());
+    private void setBody(JSONObject params, RequestType requestType) throws UnsupportedEncodingException{
+        StringEntity stringEntity = new StringEntity(params.toString());
         stringEntity.setContentType("application/json");
         stringEntity.setContentEncoding("UTF-8");
         if(requestType == RequestType.PUT) {
