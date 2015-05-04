@@ -39,8 +39,8 @@ public class FacebookEventHandler {
     //Attemps to open Facebook app.
     //If the app is not found, then we open up the facbook page with a browser.
     public void doFacebook() {
-        if(lastClickedMember.getEmail() == null ||
-                lastClickedMember.getEmail().compareTo("") == 0) {
+        if(lastClickedMember.getFacebook() == null ||
+                lastClickedMember.getFacebook().compareTo("") == 0) {
             Toast.makeText(myActivity.getApplication(), "Facebook not set", Toast.LENGTH_LONG).show();
         } else {
             Intent i = null;

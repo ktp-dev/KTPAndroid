@@ -11,6 +11,7 @@ import android.widget.Toast;
 import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ public class SplashScreenActivity extends HorizontalSlideActivity {
             public void run() {
                 JSONArray jsonArray = new JSONArray();
                 MembersRequest membersRequest = new MembersRequest();
-                List<NameValuePair> params = new ArrayList<>();
+                JSONObject params = new JSONObject();
 
                 try {
                     jsonArray = new JSONArray(membersRequest.getResponse(getString(R.string.server_address),

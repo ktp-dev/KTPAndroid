@@ -34,7 +34,7 @@ public class TwitterDialogFragment extends DialogFragment{
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle("So, you like da tweets?")
-                .setPositiveButton(R.string.twitter,
+                .setPositiveButton(R.string.twitter_positive,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 twitterEventHandler.doTwitter();

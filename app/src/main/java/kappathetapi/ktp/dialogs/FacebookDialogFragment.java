@@ -33,7 +33,7 @@ public class FacebookDialogFragment extends DialogFragment{
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle("Facebook is for old people?")
-                .setPositiveButton(R.string.facebook,
+                .setPositiveButton(R.string.facebook_positive,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 facebookEventHandler.doFacebook();

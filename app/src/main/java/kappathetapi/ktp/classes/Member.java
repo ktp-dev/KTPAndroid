@@ -1,8 +1,10 @@
 package kappathetapi.ktp.classes;
 
 import android.app.Activity;
+import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.bson.types.ObjectId;
@@ -30,6 +32,8 @@ public class Member {
     private String biography = "";
     private String profPicUrl = "";
     private String account = "";
+    private String id = "";
+    private String v = "";
 
     // contact info
     private String email = "";          // default is umich email
@@ -45,14 +49,14 @@ public class Member {
     private String pledgeClass = "";       // {Alpha,Beta,Gamma,Delta,Epsilon,Zeta,Eta}
     private String membershipStatus = "";  // {Active,Probation,Inactive,Eboard,Pledge}
     private String role = "";               // {Member,Pledge,President,Secretary,Director of Membership, ...}
-    private ObjectId[] committees = null; //committees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Committee' }],
+    private JSONArray committees = null; //committees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Committee' }],
 
     // membership requirements
     private double serviceHours = -1;
     private int proDevEvents = -1;
 
     // pledge/active meetings
-    private ObjectId[] meetings = null; // meetings: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PledgeMeeting' }]
+    private JSONArray meetings = null; // meetings: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PledgeMeeting' }]
 
     public String getFirstName() {
         return firstName;
@@ -214,6 +218,34 @@ public class Member {
         }
     }
 
+    public String getId() { return id; }
+
+    private void setId(String id) {
+        this.id = id;
+    }
+
+    public void setId(JSONObject obj) {
+        try {
+            id = obj.getString("_id");
+        } catch (JSONException e) {
+
+        }
+    }
+
+    public String getV() { return v; }
+
+    private void setV(String v) {
+        this.v = v;
+    }
+
+    public void setV(JSONObject obj) {
+        try {
+            v = obj.getString("__v");
+        } catch(JSONException e) {
+
+        }
+    }
+
     public String getEmail() {
         return email;
     }
@@ -358,17 +390,17 @@ public class Member {
         }
     }
 
-    public ObjectId[] getCommittees() {
+    public JSONArray getCommittees() {
         return committees;
     }
 
-    public void setCommittees(ObjectId[] committees) {
+    public void setCommittees(JSONArray committees) {
         this.committees = committees;
     }
 
     public void setCommittees(JSONObject obj) {
         try {
-            this.committees = (ObjectId[])(obj.get("committees"));
+            this.committees = (JSONArray)(obj.get("committees"));
         } catch (JSONException e) {
             //e.printStackTrace();
         }
@@ -406,17 +438,17 @@ public class Member {
         }
     }
 
-    public ObjectId[] getMeetings() {
+    public JSONArray getMeetings() {
         return meetings;
     }
 
-    public void setMeetings(ObjectId[] meetings) {
+    public void setMeetings(JSONArray meetings) {
         this.meetings = meetings;
     }
 
     public void setMeetings(JSONObject obj) {
         try {
-            meetings = (ObjectId[])(obj.get("meetings"));
+            meetings = (JSONArray)(obj.get("meetings"));
         } catch(JSONException e) {
 
         }
@@ -434,7 +466,6 @@ public class Member {
             json.put("hometown", getHometown());
             json.put("biography", getBiography());
             json.put("prof_pic_url", getProfPicUrl());
-            json.put("account", getAccount());
             json.put("email", getEmail());
             json.put("phone_number", getPhoneNumber());
             json.put("twitter", getTwitter());
@@ -444,12 +475,10 @@ public class Member {
             json.put("pledge_class", getPledgeClass());
             json.put("membership_status", getMembershipStatus());
             json.put("role", getRole());
-            json.put("committees", getCommittees().toString());
             json.put("service_hours", getServiceHours());
             json.put("pro_dev_events", getProDevEvents());
-            json.put("meetings", getMeetings().toString());
         } catch(JSONException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
         return json;
     }
@@ -466,6 +495,8 @@ public class Member {
         member.setBiography(obj);
         member.setProfPicUrl(obj);
         member.setAccount(obj);
+        member.setId(obj);
+        member.setV(obj);
         member.setEmail(obj);
         member.setPhoneNumber(obj);
         member.setTwitter(obj);
@@ -485,8 +516,9 @@ public class Member {
 
     public boolean update(Activity currActivity) {
         MembersRequest membersRequest = new MembersRequest();
+        Log.d("JSON", toJSON().toString());
         String response = membersRequest.getResponse(currActivity.getString(R.string.server_address),
-                MembersRequest.RequestPath.MEMBERS, MembersRequest.RequestType.POST, toJSON(), getAccount());
+                MembersRequest.RequestPath.MEMBERS, MembersRequest.RequestType.POST, toJSON(), getId());
         Toast.makeText(currActivity.getApplicationContext(), response, Toast.LENGTH_LONG);
         return true;
     }

@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +39,7 @@ public class MemberProfileFragment extends Fragment {
     private Bitmap bmp;
     private View myView;
     private OnFragmentInteractionListener mListener;
-    private boolean memberIsSet = false;
+    private boolean isMemberSet = false;
 
     public static MemberProfileFragment newInstance(JSONObject memberJSON) {
         MemberProfileFragment fragment = new MemberProfileFragment();
@@ -72,7 +71,7 @@ public class MemberProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        if(!memberIsSet) {
+        if(!isMemberSet) {
             loadMember();
         }
         myView = inflater.inflate(R.layout.fragment_member_profile, container, false);
@@ -142,12 +141,12 @@ public class MemberProfileFragment extends Fragment {
 
     public void setMember(JSONObject json) {
         member = Member.createInstance(json);
-        memberIsSet = true;
+        isMemberSet = true;
     }
 
     public void setMember(Member member) {
         this.member = member;
-        this.memberIsSet = true;
+        this.isMemberSet = true;
     }
 
     private class PhotoRequest extends AsyncTask<String, String, Bitmap> {
@@ -255,7 +254,7 @@ public class MemberProfileFragment extends Fragment {
         String membString = prefs.getString(HomePageActivity.HOME_PAGE_LAST_CLICKED_MEMBER, "");
         try {
             JSONObject memberJSON = new JSONObject(membString);
-            member = Member.createInstance(memberJSON);
+            setMember(memberJSON);
         }catch (JSONException e) {
             e.printStackTrace();
         }

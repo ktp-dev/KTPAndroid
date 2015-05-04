@@ -23,6 +23,7 @@ import kappathetapi.ktp.classes.eventhandlers.EmailEventHandler;
 import kappathetapi.ktp.classes.eventhandlers.FacebookEventHandler;
 import kappathetapi.ktp.classes.eventhandlers.PhoneEventHandler;
 import kappathetapi.ktp.classes.eventhandlers.TwitterEventHandler;
+import kappathetapi.ktp.fragments.EditProfileFragment;
 import kappathetapi.ktp.fragments.MemberProfileFragment;
 import kappathetapi.ktp.fragments.NavigationDrawerFragment;
 import kappathetapi.ktp.fragments.ProfileListFragment;
@@ -33,7 +34,8 @@ import kappathetapi.ktp.classes.Member;
 public class HomePageActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         ProfileListFragment.OnSelectionListener,
-        MemberProfileFragment.OnFragmentInteractionListener {
+        MemberProfileFragment.OnFragmentInteractionListener,
+        EditProfileFragment.OnSaveListener{
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -102,6 +104,11 @@ public class HomePageActivity extends Activity
         FragmentManager fragmentManager = getFragmentManager();
         switch(position) {
             case 0:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, EditProfileFragment.createInstance(currentMember))
+                        .commit();
+                break;
+            case 1:
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, ProfileListFragment.newInstance(position))
                         .commit();
@@ -245,6 +252,18 @@ public class HomePageActivity extends Activity
             }
         } catch(JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateThrough(Member member) {
+        int size = memberArray.length;
+        boolean memberFound = false;
+        for(int i = 0; i < size && !memberFound; ++i) {
+            if(memberArray[i].getUniqname().equals(member.getUniqname())) {
+                memberFound = true;
+                memberArray[i] = member;
+            }
         }
     }
 }
