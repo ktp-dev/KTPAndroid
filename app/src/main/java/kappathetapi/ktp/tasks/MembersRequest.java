@@ -57,6 +57,8 @@ public class MembersRequest {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
 
         try {
@@ -123,7 +125,10 @@ public class MembersRequest {
         protected String doInBackground(Params... args) {
             MembersRequest request = new MembersRequest();
             String response = null;
-            String fullUrl = args[0].url + pathToString(args[0].requestPath) + args[0].accountId;
+            String fullUrl = args[0].url + pathToString(args[0].requestPath);
+            if(!args[0].accountId.equals("")) {
+                fullUrl = fullUrl + args[0].accountId;
+            }
             response = request.getResponseFromUrl(fullUrl, args[0].params, args[0].requestType);
             return response;
         }

@@ -485,41 +485,49 @@ public class Member {
 
     public static Member createInstance(JSONObject obj) {
         Member member = new Member();
-        member.setFirstName(obj);
-        member.setLastName(obj);
-        member.setUniqname(obj);
-        member.setYear(obj);
-        member.setMajor(obj);
-        member.setGender(obj);
-        member.setHometown(obj);
-        member.setBiography(obj);
-        member.setProfPicUrl(obj);
-        member.setAccount(obj);
-        member.setId(obj);
-        member.setV(obj);
-        member.setEmail(obj);
-        member.setPhoneNumber(obj);
-        member.setTwitter(obj);
-        member.setFacebook(obj);
-        member.setLinkedin(obj);
-        member.setPersonalSite(obj);
-        member.setPledgeClass(obj);
-        member.setMembershipStatus(obj);
-        member.setRole(obj);
-        member.setCommittees(obj);
-        member.setServiceHours(obj);
-        member.setProDevEvents(obj);
-        member.setMeetings(obj);
-
+        member.setFields(obj);
         return member;
+    }
+
+    public void setFields(JSONObject obj) {
+        setFirstName(obj);
+        setLastName(obj);
+        setUniqname(obj);
+        setYear(obj);
+        setMajor(obj);
+        setGender(obj);
+        setHometown(obj);
+        setBiography(obj);
+        setProfPicUrl(obj);
+        setAccount(obj);
+        setId(obj);
+        setV(obj);
+        setEmail(obj);
+        setPhoneNumber(obj);
+        setTwitter(obj);
+        setFacebook(obj);
+        setLinkedin(obj);
+        setPersonalSite(obj);
+        setPledgeClass(obj);
+        setMembershipStatus(obj);
+        setRole(obj);
+        setCommittees(obj);
+        setServiceHours(obj);
+        setProDevEvents(obj);
+        setMeetings(obj);
     }
 
     public boolean update(Activity currActivity) {
         MembersRequest membersRequest = new MembersRequest();
         Log.d("JSON", toJSON().toString());
         String response = membersRequest.getResponse(currActivity.getString(R.string.server_address),
-                MembersRequest.RequestPath.MEMBERS, MembersRequest.RequestType.POST, toJSON(), getId());
-        Toast.makeText(currActivity.getApplicationContext(), response, Toast.LENGTH_LONG);
+                MembersRequest.RequestPath.MEMBERS, MembersRequest.RequestType.PUT, toJSON(), getId());
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            setFields(jsonObject);
+        } catch (JSONException e) {
+            return false;
+        }
         return true;
     }
 

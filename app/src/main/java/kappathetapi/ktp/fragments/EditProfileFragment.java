@@ -65,6 +65,14 @@ public class EditProfileFragment extends Fragment {
                 }
             }
         });
+
+        setHometown();
+        setBio();
+        setPhone();
+        setEmail();
+        setFacebook();
+        setTwitter();
+
         return myView;
     }
 
@@ -141,6 +149,30 @@ public class EditProfileFragment extends Fragment {
 
     private boolean updateMember() {
         return member.update(this.getActivity());
+    }
+
+    public void setHometown() {
+        ((EditText)(myView.findViewById(R.id.edit_profile_hometown_input))).setText(member.getHometown());
+    }
+
+    public void setBio() {
+        ((EditText)(myView.findViewById(R.id.edit_profile_bio_input))).setText(member.getBiography());
+    }
+
+    public void setPhone() {
+        ((EditText)(myView.findViewById(R.id.edit_profile_phone_input))).setText(member.getPhoneNumber());
+    }
+
+    public void setEmail() {
+        ((EditText)(myView.findViewById(R.id.edit_profile_email_input))).setText(member.getEmail());
+    }
+
+    public void setFacebook() {
+        ((EditText)(myView.findViewById(R.id.edit_profile_facebook_input))).setText(member.getFacebook());
+    }
+
+    public void setTwitter() {
+        ((EditText)(myView.findViewById(R.id.edit_profile_twitter_input))).setText(member.getTwitter());
     }
 
 }

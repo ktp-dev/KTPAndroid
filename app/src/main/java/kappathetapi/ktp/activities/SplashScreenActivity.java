@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -62,6 +63,7 @@ public class SplashScreenActivity extends HorizontalSlideActivity {
                             LoginActivity.class);
                     startActivity(intent);
                 } else {
+                    Looper.prepare();
                     Toast.makeText(getApplicationContext(), "TIMED OUT", Toast.LENGTH_LONG);
                     try {
                         sleep(2000);

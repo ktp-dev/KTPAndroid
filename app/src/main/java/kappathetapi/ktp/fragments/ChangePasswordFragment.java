@@ -121,7 +121,7 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
         errorText = (TextView)view.findViewById(R.id.cp_error_text);
         switch(passwordChanged) {
             case 0:
-                Toast.makeText(getActivity().getApplicationContext(),"success!", Toast.LENGTH_LONG);
+                Toast.makeText(getActivity().getApplicationContext(),"success!", Toast.LENGTH_LONG).show();
                 break;
             case 1:
                 errorText.setText("Account not found. You in the right place, bruh?");

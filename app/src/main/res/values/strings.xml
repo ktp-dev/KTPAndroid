@@ -43,7 +43,7 @@
     <string name="twitter_button">T</string>
     <string name="facebook_button">F</string>
     <string name="linkedin_button">L</string>
-
+    <!-- http://kappathetapi.com or http://localhost:3000 -->
     <string name="server_address">http://kappathetapi.com</string>
     <string name="server_token">5af9a24515589a73d0fa687e69cbaaa15918f833</string>
 
