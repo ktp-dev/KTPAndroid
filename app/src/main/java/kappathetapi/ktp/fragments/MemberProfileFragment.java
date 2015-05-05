@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -153,20 +154,29 @@ public class MemberProfileFragment extends Fragment {
         @Override
         protected Bitmap doInBackground(String... arg) {
             bmp = null;
-            try {
-                URL url = new URL(arg[0]);
-                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            if(!(arg[0].equals(getString(R.string.server_address)))) {
+                try {
+                    URL url = new URL(arg[0]);
+                    bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            ((ImageView) myView.findViewById(R.id.profile_pic_view)).setImageBitmap(bmp);
+                        }
+                    });
+
+                    return bmp;
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ic_user);
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         ((ImageView) myView.findViewById(R.id.profile_pic_view)).setImageBitmap(bmp);
                     }
                 });
-
-                return bmp;
-            } catch(MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
 
             return bmp;

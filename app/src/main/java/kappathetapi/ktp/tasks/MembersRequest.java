@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 public class MembersRequest {
     public enum RequestType{POST, GET, PUT, DELETE} //Used to set request type later
     public enum RequestPath{MEMBERS, LOGIN, PITCHES, CHANGE_PASSWORD} //Used to access some default routes
+    public enum RequestDataType{JSON, PNG}
     static InputStream is = null;
     static String response = "";
     private HttpRequestBase httpRequest;
@@ -35,12 +36,12 @@ public class MembersRequest {
         httpRequest = new HttpPut("");//default value so httpRequest is not empty.
     }
     public String getResponseFromUrl(String urlString, JSONObject params,
-                                     RequestType requestType) {
+                                     RequestType requestType, RequestDataType requestDataType) {
 
         try {
             DefaultHttpClient httpClient = new DefaultHttpClient();
             setRequestType(requestType, urlString);
-            setDefaultHeaders();
+            setHeaders(requestDataType);
 
             //Only put and post have bodies, because they're the only commands that provide info to the server
             if(requestType == RequestType.PUT || requestType == RequestType.POST) {
@@ -96,11 +97,12 @@ public class MembersRequest {
         return response;
     }
     private static class Params {
-        String url;
-        RequestPath requestPath;
-        RequestType requestType;
-        JSONObject params;
-        String accountId;
+        public String url;
+        public RequestPath requestPath;
+        public RequestType requestType;
+        public RequestDataType requestDataType;
+        public JSONObject params;
+        public String accountId;
 
         Params(String url, RequestPath requestPath, RequestType requestType,
                JSONObject params) {
@@ -109,6 +111,7 @@ public class MembersRequest {
             this.requestType = requestType;
             this.params = params;
             this.accountId = "";
+            this.requestDataType = RequestDataType.JSON;
         }
 
         Params(String url, RequestPath requestPath, RequestType requestType,
@@ -118,6 +121,17 @@ public class MembersRequest {
             this.requestType = requestType;
             this.params = params;
             this.accountId = accountId;
+            this.requestDataType = RequestDataType.JSON;
+        }
+
+        Params(String url, RequestPath requestPath, RequestType requestType,
+               JSONObject params, String accountId, RequestDataType requestDataType) {
+            this.url = url;
+            this.requestPath = requestPath;
+            this.requestType = requestType;
+            this.params = params;
+            this.accountId = accountId;
+            this.requestDataType = requestDataType;
         }
     }
     private class Request extends AsyncTask<Params, String, String> {
@@ -129,7 +143,11 @@ public class MembersRequest {
             if(!args[0].accountId.equals("")) {
                 fullUrl = fullUrl + args[0].accountId;
             }
-            response = request.getResponseFromUrl(fullUrl, args[0].params, args[0].requestType);
+            if(args[0].requestDataType == RequestDataType.PNG) {
+                fullUrl = fullUrl + "/upload_pic";
+            }
+            response = request.getResponseFromUrl(fullUrl, args[0].params, args[0].requestType,
+                    args[0].requestDataType);
             return response;
         }
         @Override
@@ -166,9 +184,20 @@ public class MembersRequest {
                 break;
         }
     }
-    private void setDefaultHeaders() {
+
+    private String dataTypeToString(RequestDataType type) {
+        switch(type) {
+            case JSON:
+                return "application/json";
+            case PNG:
+                return "image/png";
+        }
+
+        return "";
+    }
+    private void setHeaders(RequestDataType contentType) {
         httpRequest.setHeader("x-access-token", "5af9a24515589a73d0fa687e69cbaaa15918f833");
-        httpRequest.setHeader("Content-Type", "application/json");
+        httpRequest.setHeader("Content-Type", dataTypeToString(contentType));
         httpRequest.setHeader("Accept", "application/json");
     }
     private void setBody(JSONObject params, RequestType requestType) throws UnsupportedEncodingException{
