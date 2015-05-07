@@ -26,6 +26,7 @@ import java.net.URL;
 import kappathetapi.ktp.R;
 import kappathetapi.ktp.activities.HomePageActivity;
 import kappathetapi.ktp.classes.Member;
+import kappathetapi.ktp.classes.gifhelpers.ImageViewGIF;
 import kappathetapi.ktp.tasks.PhotoRequest;
 
 
@@ -101,7 +102,7 @@ public class MemberProfileFragment extends Fragment {
         //Must be in onStart because it needs access to the parent activity's runOnUIThread method
         PhotoRequest request = new PhotoRequest();
         request.getPicModifyView(getString(R.string.server_address) + member.getProfPicUrl(),
-                getActivity(), (ImageView)(myView.findViewById(R.id.profile_pic_view)));
+                getActivity(), (ImageViewGIF)(myView.findViewById(R.id.profile_pic_view)));
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -8,22 +8,24 @@ import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import kappathetapi.ktp.R;
+import kappathetapi.ktp.classes.gifhelpers.ImageViewGIF;
 
 /**
  * Created by sjdallst on 5/6/2015.
  */
 public class PhotoRequest {
     private Activity activity;
-    private ImageView imageView;
+    private ImageViewGIF imageView;
     private Bitmap bmp;
     private Movie movie;
 
-    public void getPicModifyView(String url, Activity activity, ImageView view) {
+    public void getPicModifyView(String url, Activity activity, ImageViewGIF view) {
         this.activity = activity;
         this.imageView = view;
 
@@ -53,10 +55,13 @@ public class PhotoRequest {
             movie = null;
             try {
                 URL url = new URL(urlString);
-                movie = Movie.decodeStream(url.openConnection().getInputStream());
+                BufferedInputStream bis = new BufferedInputStream(url.openConnection().getInputStream(), 4096);
+                bis.mark(16*4096);
+                movie = Movie.decodeStream(bis);
+                System.out.println("JAJAJAJJAJA " + (movie == null));
                 activity.runOnUiThread(new Runnable() {
                     public void run() {
-                        activity.addContentView(new ImageView(activity.getApplicationContext()), imageView.getLayoutParams());
+                        imageView.setMovie(movie);
                     }
                 });
             } catch (MalformedURLException e) {
