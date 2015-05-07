@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import java.net.URL;
 import kappathetapi.ktp.R;
 import kappathetapi.ktp.activities.HomePageActivity;
 import kappathetapi.ktp.classes.Member;
+import kappathetapi.ktp.tasks.PhotoRequest;
 
 
 /**
@@ -98,7 +100,8 @@ public class MemberProfileFragment extends Fragment {
         //Gets the photo from the member's URL then sets it in the view.
         //Must be in onStart because it needs access to the parent activity's runOnUIThread method
         PhotoRequest request = new PhotoRequest();
-        request.execute(getString(R.string.server_address) + member.getProfPicUrl());
+        request.getPicModifyView(getString(R.string.server_address) + member.getProfPicUrl(),
+                getActivity(), (ImageView)(myView.findViewById(R.id.profile_pic_view)));
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -148,43 +151,6 @@ public class MemberProfileFragment extends Fragment {
     public void setMember(Member member) {
         this.member = member;
         this.isMemberSet = true;
-    }
-
-    private class PhotoRequest extends AsyncTask<String, String, Bitmap> {
-        @Override
-        protected Bitmap doInBackground(String... arg) {
-            bmp = null;
-            if(!(arg[0].equals(getString(R.string.server_address)))) {
-                try {
-                    URL url = new URL(arg[0]);
-                    bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                    getActivity().runOnUiThread(new Runnable() {
-                        public void run() {
-                            ((ImageView) myView.findViewById(R.id.profile_pic_view)).setImageBitmap(bmp);
-                        }
-                    });
-
-                    return bmp;
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ic_user);
-                getActivity().runOnUiThread(new Runnable() {
-                    public void run() {
-                        ((ImageView) myView.findViewById(R.id.profile_pic_view)).setImageBitmap(bmp);
-                    }
-                });
-            }
-
-            return bmp;
-        }
-        @Override
-        protected void onPostExecute(Bitmap bmp) {
-
-        }
     }
 
     private void setNameText() {
