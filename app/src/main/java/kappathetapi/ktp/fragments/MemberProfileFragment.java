@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -92,6 +93,8 @@ public class MemberProfileFragment extends Fragment {
         setProDevEventsText();
         setPersonalSiteText();
 
+        setDeleteButton();
+
         return myView;
     }
 
@@ -103,13 +106,6 @@ public class MemberProfileFragment extends Fragment {
         PhotoRequest request = new PhotoRequest();
         request.getPicModifyView(getString(R.string.server_address) + member.getProfPicUrl(),
                 getActivity(), (ImageViewGIF)(myView.findViewById(R.id.profile_pic_view)));
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
@@ -140,8 +136,7 @@ public class MemberProfileFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public void onDeletePressed();
     }
 
     public void setMember(JSONObject json) {
@@ -224,6 +219,19 @@ public class MemberProfileFragment extends Fragment {
     private void setPersonalSiteText() {
         ((TextView)(myView.findViewById(R.id.profile_personal_site))).setText("Personal Site: " +
                 member.getPersonalSite());
+    }
+
+    private void setDeleteButton() {
+        if(((HomePageActivity)getActivity()).currentMember.getMembershipStatus().equals("Eboard")) {
+            ((Button)(myView.findViewById(R.id.prof_delete_button))).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onDeletePressed();
+                }
+            });
+        } else {
+            (myView.findViewById(R.id.prof_delete_button)).setVisibility(View.GONE);
+        }
     }
 
     private void loadMember() {

@@ -19,6 +19,7 @@ import org.json.JSONException;
 
 import java.util.Arrays;
 
+import kappathetapi.ktp.classes.eventhandlers.DeleteEventHandler;
 import kappathetapi.ktp.classes.eventhandlers.EmailEventHandler;
 import kappathetapi.ktp.classes.eventhandlers.FacebookEventHandler;
 import kappathetapi.ktp.classes.eventhandlers.PhoneEventHandler;
@@ -174,8 +175,26 @@ public class HomePageActivity extends Activity
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onDeletePressed() {
+        DeleteEventHandler deleteHandler = DeleteEventHandler.newInstance(this, lastClickedMember);
+        if(deleteHandler.handleDelete()) {
+            deleteMember(lastClickedMember);
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.container, ProfileListFragment.newInstance(1))
+                    .commit();
+        }
+    }
 
+    private void deleteMember(Member member) {
+        Member[] mems = new Member[memberArray.length - 1];
+        int j = 0;
+        for(int i = 0; i < memberArray.length; ++i) {
+            if(!memberArray[i].getId().equals(member.getId())) {
+                mems[j] = memberArray[i];
+                ++j;
+            }
+        }
+        memberArray = mems;
     }
 
     //ALL OF THESE BUTTON PRESSES LEAVE THE APP

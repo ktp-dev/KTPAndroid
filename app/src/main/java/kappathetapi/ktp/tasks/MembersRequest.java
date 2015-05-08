@@ -50,7 +50,9 @@ public class MembersRequest {
 
             HttpResponse httpResponse = httpClient.execute(httpRequest);
             HttpEntity httpEntity = httpResponse.getEntity();
-            is = httpEntity.getContent();
+            if(requestType != RequestType.DELETE) {
+                is = httpEntity.getContent();
+            }
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

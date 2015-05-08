@@ -531,6 +531,13 @@ public class Member {
         return true;
     }
 
+    public boolean delete(Activity currActivity) {
+        MembersRequest membersRequest = new MembersRequest();
+        membersRequest.getResponse(currActivity.getString(R.string.server_address),
+                MembersRequest.RequestPath.MEMBERS, MembersRequest.RequestType.DELETE, toJSON(), getId());
+        return true;
+    }
+
     //Comparators for the sortings :DDDDDD
     public static class MemberNameComparator implements Comparator<Member> {
 

@@ -34,6 +34,9 @@
     <string name="bio">Bio</string>
     <string name="hometown">Hometown</string>
     <string name="save_changes">save changes</string>
+    <string name="delete">Delete</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <string name="edit_profile">Edit Profile</string>
 
