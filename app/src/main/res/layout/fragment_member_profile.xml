@@ -24,6 +24,7 @@
             android:id="@+id/profile_name"
             android:layout_gravity="start|top"
             android:layout_column="1"
+            android:layout_columnSpan="2"
             android:layout_row="0"/>
 
         <TextView
@@ -35,6 +36,7 @@
             android:textSize="22sp"
             android:layout_gravity="start|top"
             android:layout_column="1"
+            android:layout_columnSpan="2"
             android:layout_row="1"/>
 
         <TextView
@@ -102,22 +104,55 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Text"
+            android:text="service hours"
             android:textSize="18sp"
             android:id="@+id/profile_service_hours"
             android:layout_row="8"
             android:layout_column="0"
             android:layout_columnSpan="3"/>
 
+        <EditText
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="18sp"
+            android:id="@+id/profile_service_hours_edit"
+            android:layout_row="8"
+            android:layout_column="1"
+            android:layout_columnSpan="3"
+            android:inputType="numberDecimal"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Text"
+            android:text="prodev"
             android:textSize="18sp"
             android:id="@+id/profile_pro_dev_events"
             android:layout_row="9"
             android:layout_column="0"
             android:layout_columnSpan="3"/>
+
+        <EditText
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="18sp"
+            android:id="@+id/profile_pro_dev_events_edit"
+            android:layout_row="9"
+            android:layout_column="1"
+            android:layout_columnSpan="3"
+            android:inputType="number"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_row="8"
+            android:layout_rowSpan="2"
+            android:layout_column="2"
+            android:text="@string/save_changes"
+            android:layout_gravity="center"
+            android:id="@+id/prof_save_button"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -129,7 +164,7 @@
             android:layout_column="0"
             android:layout_columnSpan="3"/>
 
-        <LinearLayout android:layout_row="11"
+        <GridLayout android:layout_row="11"
             android:layout_columnSpan="3"
             android:orientation="horizontal">
             <Button
@@ -138,29 +173,33 @@
                 android:text="@string/phone_button"
                 android:id="@+id/prof_phone_button"
                 android:layout_gravity="center|top"
-                android:onClick="phoneButtonPressed"/>
+                android:onClick="phoneButtonPressed"
+                android:layout_column="0"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/email_button"
                 android:id="@+id/prof_email_button"
                 android:layout_gravity="center|top"
-                android:onClick="emailButtonPressed"/>
+                android:onClick="emailButtonPressed"
+                android:layout_column="1"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/twitter_button"
                 android:id="@+id/prof_twitter_button"
                 android:layout_gravity="center|top"
-                android:onClick="twitterButtonPressed"/>
+                android:onClick="twitterButtonPressed"
+                android:layout_column="2"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/facebook_button"
                 android:id="@+id/prof_facebook_button"
                 android:layout_gravity="center|top"
-                android:onClick="facebookButtonPressed"/>
-        </LinearLayout>
+                android:onClick="facebookButtonPressed"
+                android:layout_column="3"/>
+        </GridLayout>
 
         <!--<LinearLayout android:layout_columnSpan="3"
             android:layout_row="12">
@@ -184,5 +223,6 @@
             android:id="@+id/prof_delete_button"
             android:layout_marginTop="10dp"
             android:layout_gravity="center|top"/>
+
     </GridLayout>
 </ScrollView>

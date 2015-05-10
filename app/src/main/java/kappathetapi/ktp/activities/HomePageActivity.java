@@ -197,6 +197,10 @@ public class HomePageActivity extends Activity
         memberArray = mems;
     }
 
+    @Override
+    public void onSavePressed(Member member) {
+        updateArray(member);
+    }
     //ALL OF THESE BUTTON PRESSES LEAVE THE APP
     //Called from MemberProfileFragment when the phone button is pressed.
     //Creates a dialog that asks if you want to call n stuff
@@ -276,6 +280,10 @@ public class HomePageActivity extends Activity
 
     @Override
     public void updateThrough(Member member) {
+        updateArray(member);
+    }
+
+    private void updateArray(Member member) {
         int size = memberArray.length;
         boolean memberFound = false;
         for(int i = 0; i < size && !memberFound; ++i) {

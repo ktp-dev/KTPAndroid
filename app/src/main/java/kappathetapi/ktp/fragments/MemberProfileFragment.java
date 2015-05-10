@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,7 +45,9 @@ public class MemberProfileFragment extends Fragment {
     private Bitmap bmp;
     private View myView;
     private OnFragmentInteractionListener mListener;
-    private boolean isMemberSet = false;
+    private boolean isMemberSet = false, showSaveButton = false;
+    double oldServiceHours = 0;
+    int oldProDevEvents = 0;
 
     public static MemberProfileFragment newInstance(JSONObject memberJSON) {
         MemberProfileFragment fragment = new MemberProfileFragment();
@@ -94,6 +97,7 @@ public class MemberProfileFragment extends Fragment {
         setPersonalSiteText();
 
         setDeleteButton();
+        setSaveButton();
 
         return myView;
     }
@@ -105,7 +109,7 @@ public class MemberProfileFragment extends Fragment {
         //Must be in onStart because it needs access to the parent activity's runOnUIThread method
         PhotoRequest request = new PhotoRequest();
         request.getPicModifyView(getString(R.string.server_address) + member.getProfPicUrl(),
-                getActivity(), (ImageViewGIF)(myView.findViewById(R.id.profile_pic_view)));
+                getActivity(), (ImageViewGIF) (myView.findViewById(R.id.profile_pic_view)));
     }
 
     @Override
@@ -137,6 +141,7 @@ public class MemberProfileFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         public void onDeletePressed();
+        public void onSavePressed(Member member);
     }
 
     public void setMember(JSONObject json) {
@@ -179,7 +184,7 @@ public class MemberProfileFragment extends Fragment {
         if(member.getBiography() == null || member.getBiography().compareTo("") == 0) {
             ((TextView)(myView.findViewById(R.id.profile_bio))).setText("");
         } else {
-            ((TextView) (myView.findViewById(R.id.profile_bio))).setText("Bio:\n" + member.getBiography());
+            ((TextView) (myView.findViewById(R.id.profile_bio))).setText("Bio: " + member.getBiography());
         }
     }
 
@@ -198,10 +203,12 @@ public class MemberProfileFragment extends Fragment {
     private void setServiceHoursText() {
         if(member.getUniqname().equals(((HomePageActivity)getActivity()).currentMember.getUniqname())
                 || ((HomePageActivity)getActivity()).currentMember.getMembershipStatus().equals("Eboard")) {
-            ((TextView) (myView.findViewById(R.id.profile_service_hours))).setText("Service Hours: " +
-                    member.getServiceHours());
+            ((TextView) (myView.findViewById(R.id.profile_service_hours))).setText("Service Hours: ");
+            EditText editText = ((EditText)(myView.findViewById(R.id.profile_service_hours_edit)));
+            editText.setText(Double.toString(member.getServiceHours()));
         } else {
             ((TextView) (myView.findViewById(R.id.profile_service_hours))).setVisibility(View.GONE);
+            myView.findViewById(R.id.profile_service_hours_edit).setVisibility(View.GONE);
         }
     }
 
@@ -209,10 +216,12 @@ public class MemberProfileFragment extends Fragment {
     private void setProDevEventsText() {
         if(member.getUniqname().equals(((HomePageActivity)getActivity()).currentMember.getUniqname())
                 ||((HomePageActivity)getActivity()).currentMember.getMembershipStatus().equals("Eboard")) {
-            ((TextView) (myView.findViewById(R.id.profile_pro_dev_events))).setText("ProDev Events: " +
-                    member.getProDevEvents());
+            ((TextView) (myView.findViewById(R.id.profile_pro_dev_events))).setText("ProDev Events: ");
+            EditText editText = (EditText)(myView.findViewById(R.id.profile_pro_dev_events_edit));
+            editText.setText(Integer.toString(member.getProDevEvents()));
         } else {
             ((TextView) (myView.findViewById(R.id.profile_pro_dev_events))).setVisibility(View.GONE);
+            myView.findViewById(R.id.profile_pro_dev_events_edit).setVisibility(View.GONE);
         }
     }
 
@@ -232,6 +241,52 @@ public class MemberProfileFragment extends Fragment {
         } else {
             (myView.findViewById(R.id.prof_delete_button)).setVisibility(View.GONE);
         }
+    }
+
+    private void setSaveButton() {
+        if(((HomePageActivity)getActivity()).currentMember.getMembershipStatus().equals("Eboard")) {
+            ((myView.findViewById(R.id.prof_save_button))).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(hasChanges()) {
+                        boolean success = member.update(getActivity());
+                        if (success) {
+                            mListener.onSavePressed(member);
+                        } else {
+                            member.setProDevEvents(oldProDevEvents);
+                            member.setServiceHours(oldServiceHours);
+                        }
+                    }
+                }
+            });
+        } else {
+            (myView.findViewById(R.id.prof_save_button)).setVisibility(View.GONE);
+        }
+    }
+
+    private boolean hasChanges() {
+        boolean changeMade = false;
+        try {
+            Double serviceHours = Double.valueOf(((EditText)(myView.findViewById(R.id.profile_service_hours_edit))).getText().toString());
+            if(serviceHours != member.getServiceHours()) {
+                oldServiceHours = member.getServiceHours();
+                member.setServiceHours(serviceHours);
+                changeMade = true;
+            }
+        } catch(NumberFormatException e) {
+            e.printStackTrace();
+        }
+        try {
+            Integer proDevEvents = Integer.valueOf(((EditText)(myView.findViewById(R.id.profile_pro_dev_events_edit))).getText().toString());
+            if(proDevEvents != member.getProDevEvents()) {
+                oldProDevEvents = member.getProDevEvents();
+                member.setProDevEvents(proDevEvents);
+                changeMade = true;
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return changeMade;
     }
 
     private void loadMember() {
