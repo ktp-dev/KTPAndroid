@@ -107,9 +107,8 @@ public class MemberProfileFragment extends Fragment {
         super.onStart();
         //Gets the photo from the member's URL then sets it in the view.
         //Must be in onStart because it needs access to the parent activity's runOnUIThread method
-        PhotoRequest request = new PhotoRequest();
-        request.getPicModifyView(getString(R.string.server_address) + member.getProfPicUrl(),
-                getActivity(), (ImageViewGIF) (myView.findViewById(R.id.profile_pic_view)));
+        ((ImageViewGIF) (myView.findViewById(R.id.profile_pic_view))).setImage(
+                getString(R.string.server_address) + member.getProfPicUrl(), getActivity());
     }
 
     @Override

@@ -2,7 +2,10 @@ package kappathetapi.ktp.fragments;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -11,13 +14,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 import kappathetapi.ktp.R;
 import kappathetapi.ktp.activities.HomePageActivity;
 import kappathetapi.ktp.classes.Member;
+import kappathetapi.ktp.classes.gifhelpers.ImageViewGIF;
+import kappathetapi.ktp.tasks.PhotoRequest;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,6 +83,12 @@ public class EditProfileFragment extends Fragment {
         setTwitter();
 
         return myView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        setPic();
     }
 
     @Override
@@ -173,6 +188,49 @@ public class EditProfileFragment extends Fragment {
 
     public void setTwitter() {
         ((EditText)(myView.findViewById(R.id.edit_profile_twitter_input))).setText(member.getTwitter());
+    }
+
+    public void setPic() {
+        ((ImageViewGIF) (myView.findViewById(R.id.edit_profile_pic))).setImage(
+                getString(R.string.server_address) + member.getProfPicUrl(), getActivity());
+        myView.findViewById(R.id.edit_profile_pic).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startChooser();
+            }
+        });
+    }
+
+    static final int SELECT_PHOTO = 1;
+    public void startChooser() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, SELECT_PHOTO);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        switch(requestCode) {
+            case SELECT_PHOTO:
+                try {
+                    InputStream is = getActivity().getContentResolver().openInputStream(intent.getData());
+                    Bitmap bmp = BitmapFactory.decodeStream(is);
+                    PhotoRequest photoRequest = new PhotoRequest();
+                    photoRequest.uploadPic(getString(R.string.server_address) + "/api/members/" + member.getId() + "/upload_pic", bmp,
+                            getActivity(), (ImageViewGIF)(myView.findViewById(R.id.edit_profile_pic)), member);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity().getApplicationContext(),"File not found", Toast.LENGTH_LONG).show();
+                }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mListener.updateThrough(member);
     }
 
 }

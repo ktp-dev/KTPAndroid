@@ -1,6 +1,7 @@
 package kappathetapi.ktp.classes.gifhelpers;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -9,6 +10,9 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+
+import kappathetapi.ktp.R;
+import kappathetapi.ktp.tasks.PhotoRequest;
 
 /**
  * This is a View class that wraps Android {@link Movie} object and displays it.
@@ -289,5 +293,10 @@ public class ImageViewGIF extends ImageView {
         super.onWindowVisibilityChanged(visibility);
         mVisible = visibility == View.VISIBLE;
         invalidateView();
+    }
+
+    public void setImage(String url, Activity activity) {
+        PhotoRequest request = new PhotoRequest();
+        request.getPicModifyView(url, activity, this);
     }
 }
