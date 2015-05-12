@@ -9,26 +9,37 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
+
         <activity
             android:name=".activities.HomePageActivity"
             android:label="@string/title_activity_home_page" >
         </activity>
+
         <activity
             android:name=".activities.SplashScreenActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
+        <provider
+            android:name=".classes.contentproviders.PhotoContentProvider"
+            android:authorities="com.kappathetapi.camera"
+            android:enabled="true"
+            android:exported="true" />
+
     </application>
 
 </manifest>

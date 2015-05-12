@@ -2,12 +2,15 @@ package kappathetapi.ktp.fragments;
 
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,19 +22,23 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import kappathetapi.ktp.R;
 import kappathetapi.ktp.activities.HomePageActivity;
 import kappathetapi.ktp.classes.Member;
+import kappathetapi.ktp.classes.contentproviders.PhotoContentProvider;
 import kappathetapi.ktp.classes.gifhelpers.ImageViewGIF;
+import kappathetapi.ktp.classes.interfaces.PhotoGetter;
+import kappathetapi.ktp.dialogs.PhotoDialogFragment;
 import kappathetapi.ktp.tasks.PhotoRequest;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EditProfileFragment extends Fragment {
+public class EditProfileFragment extends Fragment implements PhotoGetter {
     private Member member;
     private boolean isMemberSet = false;
     private View myView;
@@ -202,7 +209,26 @@ public class EditProfileFragment extends Fragment {
     }
 
     static final int SELECT_PHOTO = 1;
+    static final int USE_CAMERA = 2;
     public void startChooser() {
+        DialogFragment newFragment = PhotoDialogFragment.newInstance(this);
+        newFragment.show(getActivity().getFragmentManager(), "dialog");
+    }
+
+    @Override
+    public void getFromCamera() {
+        PackageManager pm = getActivity().getPackageManager();
+        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            i.putExtra(MediaStore.EXTRA_OUTPUT, PhotoContentProvider.CONTENT_URI);
+            startActivityForResult(i, USE_CAMERA);
+        } else {
+            Toast.makeText(getActivity().getBaseContext(), "Camera is not available", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void getFromPhone() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent, SELECT_PHOTO);
@@ -224,6 +250,19 @@ public class EditProfileFragment extends Fragment {
                     e.printStackTrace();
                     Toast.makeText(getActivity().getApplicationContext(),"File not found", Toast.LENGTH_LONG).show();
                 }
+                break;
+            case USE_CAMERA:
+                File out = new File(getActivity().getFilesDir(), "newImage.jpg");
+                if(!out.exists()) {
+                    Toast.makeText(getActivity().getBaseContext(),
+                            "Error while capturing image", Toast.LENGTH_LONG)
+                            .show();
+                    return;
+                }
+                Bitmap bmp = BitmapFactory.decodeFile(out.getAbsolutePath());
+                PhotoRequest photoRequest = new PhotoRequest();
+                photoRequest.uploadPic(getString(R.string.server_address) + "/api/members/" + member.getId() + "/upload_pic", bmp,
+                        getActivity(), (ImageViewGIF)(myView.findViewById(R.id.edit_profile_pic)), member);
         }
     }
 
