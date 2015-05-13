@@ -52,9 +52,11 @@ public class HomePageActivity extends Activity
     public static String HOME_PAGE_JSON = "com.kappathetapi.app.HOME_PAGE_JSON";
     public static String HOME_PAGE_UNIQNAME = "com.kappathetapi.app.HOME_PAGE_UNIQNAME";
     public static String HOME_PAGE_LAST_CLICKED_MEMBER = "com.kappathetapi.app.HOME_PAGE_LAST_CLICKED_MEMBER";
+    public static String HOME_PAGE_SELECTION = "com.kappathetapi.app.HOME_PAGE_SELECTION";
     private String uniqname = "";//Currently logged in member's uniqname
     public Member currentMember = new Member(); //Currently logged in member
     public Member lastClickedMember; //The last member that was picked from member list under members
+    private int navSelection = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,15 @@ public class HomePageActivity extends Activity
         } else {
             uniqname = prefs.getString(HOME_PAGE_UNIQNAME, "");
         }
+
+        //Set which navigation drawer item to select
+        navSelection = 1;
+        if(intent.hasExtra(HOME_PAGE_SELECTION)) {
+            navSelection = intent.getIntExtra(HOME_PAGE_SELECTION, 1);
+        } else {
+            navSelection = prefs.getInt(HOME_PAGE_SELECTION, 1);
+        }
+
         //Either get the List of Members from LoginActivity or get it from storage
         try {
             if(intent.hasExtra(LoginActivity.JSON_ARRAY)) {
@@ -88,7 +99,7 @@ public class HomePageActivity extends Activity
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+                (DrawerLayout) findViewById(R.id.drawer_layout), navSelection);
 
         //Set initial sorting of member list by name
         Arrays.sort(memberArray, new Member.MemberNameComparator());
@@ -103,16 +114,24 @@ public class HomePageActivity extends Activity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
+        Intent intent;
         switch(position) {
             case 0:
+                navSelection = position;
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, EditProfileFragment.createInstance(currentMember))
                         .commit();
                 break;
             case 1:
+                navSelection = position;
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, ProfileListFragment.newInstance(position))
                         .commit();
+                break;
+            case 2:
+                intent = new Intent(getApplicationContext(), PledgingActivity.class);
+                startActivity(intent);
+                finish();
                 break;
         }
     }
@@ -170,8 +189,6 @@ public class HomePageActivity extends Activity
         fragmentManager.beginTransaction()
                 .replace(R.id.container, MemberProfileFragment.newInstance(lastClickedMember))
                 .commit();
-
-
     }
 
     @Override
@@ -244,6 +261,8 @@ public class HomePageActivity extends Activity
         if(lastClickedMember != null) {
             prefs.edit().putString(HOME_PAGE_LAST_CLICKED_MEMBER, lastClickedMember.toJSON().toString()).apply();
         }
+
+        prefs.edit().putInt(HOME_PAGE_SELECTION, navSelection);
         super.onStop();
     }
 
