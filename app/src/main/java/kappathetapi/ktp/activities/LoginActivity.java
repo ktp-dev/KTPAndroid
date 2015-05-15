@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kappathetapi.ktp.R;
+import kappathetapi.ktp.classes.datamangement.MemberArrayManager;
 import kappathetapi.ktp.fragments.ChangePasswordFragment;
 import kappathetapi.ktp.fragments.LoginFragment;
 import kappathetapi.ktp.tasks.MembersRequest;
@@ -39,6 +40,8 @@ public class LoginActivity extends Activity implements ChangePasswordFragment.On
     private JSONArray jsonArray = new JSONArray();
     public final static String JSON_ARRAY = "com.kappathetapi.KTP.JSONArray";
     public final static String MEMBER_UNIQNAME = "com.kappathetapi.KTP.MemberUniqname";
+
+    MemberArrayManager memberArrayManager = new MemberArrayManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +115,7 @@ public class LoginActivity extends Activity implements ChangePasswordFragment.On
 
         if(canLogin == 0) {
             Intent homePageIntent = new Intent(LoginActivity.this,HomePageActivity.class);
-            homePageIntent.putExtra(JSON_ARRAY, jsonArray.toString());
+            memberArrayManager.saveArray(jsonArray, this);
             homePageIntent.putExtra(MEMBER_UNIQNAME, usernameString);
             startActivity(homePageIntent);
             finish();

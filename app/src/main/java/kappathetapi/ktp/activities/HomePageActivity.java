@@ -19,6 +19,7 @@ import org.json.JSONException;
 
 import java.util.Arrays;
 
+import kappathetapi.ktp.classes.datamangement.MemberArrayManager;
 import kappathetapi.ktp.classes.eventhandlers.DeleteEventHandler;
 import kappathetapi.ktp.classes.eventhandlers.EmailEventHandler;
 import kappathetapi.ktp.classes.eventhandlers.FacebookEventHandler;
@@ -56,6 +57,8 @@ public class HomePageActivity extends Activity
     private String uniqname = "";//Currently logged in member's uniqname
     public Member currentMember = new Member(); //Currently logged in member
     public Member lastClickedMember; //The last member that was picked from member list under members
+
+    private MemberArrayManager memberArrayManager = new MemberArrayManager();
     private int navSelection = 1;
 
     @Override
@@ -80,17 +83,8 @@ public class HomePageActivity extends Activity
             navSelection = prefs.getInt(HOME_PAGE_SELECTION, 1);
         }
 
-        //Either get the List of Members from LoginActivity or get it from storage
-        try {
-            if(intent.hasExtra(LoginActivity.JSON_ARRAY)) {
-                jsonArray = new JSONArray(intent.getStringExtra(LoginActivity.JSON_ARRAY));
-            } else {
-                jsonArray = new JSONArray(prefs.getString(HOME_PAGE_JSON, null));
-            }
-            makeMemberArrayFromJSON();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        currentMember = new Member();
+        memberArray = memberArrayManager.loadArray(uniqname, currentMember, this);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -129,6 +123,7 @@ public class HomePageActivity extends Activity
                         .commit();
                 break;
             case 2:
+                memberArrayManager.saveArray(memberArray, this);
                 intent = new Intent(getApplicationContext(), PledgingActivity.class);
                 startActivity(intent);
                 finish();
@@ -250,11 +245,9 @@ public class HomePageActivity extends Activity
     @Override
     public void onStop() {
         SharedPreferences prefs = this.getSharedPreferences(getString(R.string.app_identifier), MODE_PRIVATE);
-        JSONArray jArray = new JSONArray();
-        for(int i = 0; i < memberArray.length; ++i) {
-            jArray.put(memberArray[i].toJSON());
-        }
-        prefs.edit().putString(HOME_PAGE_JSON, jArray.toString()).apply();
+
+        memberArrayManager.saveArray(memberArray, this);
+
         if(uniqname != null) {
             prefs.edit().putString(HOME_PAGE_UNIQNAME, uniqname).apply();
         }
@@ -270,31 +263,11 @@ public class HomePageActivity extends Activity
     public void onRestart() {
         super.onRestart();
         SharedPreferences prefs = this.getSharedPreferences(getString(R.string.app_identifier), MODE_PRIVATE);
-        try {
-            jsonArray = new JSONArray(prefs.getString(HOME_PAGE_JSON, null));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        uniqname = prefs.getString(HOME_PAGE_UNIQNAME, "");
-        makeMemberArrayFromJSON();
-    }
 
-    //Uses jsonArray to set memberArray
-    private void makeMemberArrayFromJSON() {
-        try {
-            memberArray = new Member[jsonArray.length()];
-            for (int i = 0; i < memberArray.length; ++i) {
-                memberArray[i] = new Member();
-                if (Member.createInstance(jsonArray.getJSONObject(i)) != null) {
-                    memberArray[i] = Member.createInstance(jsonArray.getJSONObject(i));
-                    if (memberArray[i].getUniqname().equals(uniqname)) {
-                        currentMember = memberArray[i];
-                    }
-                }
-            }
-        } catch(JSONException e) {
-            e.printStackTrace();
-        }
+        uniqname = prefs.getString(HOME_PAGE_UNIQNAME, "");
+
+        currentMember = new Member();
+        memberArray = memberArrayManager.loadArray(uniqname, currentMember, this);
     }
 
     @Override

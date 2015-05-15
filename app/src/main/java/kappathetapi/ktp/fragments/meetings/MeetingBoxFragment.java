@@ -1,4 +1,4 @@
-package kappathetapi.ktp.fragments;
+package kappathetapi.ktp.fragments.meetings;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -15,7 +15,7 @@ import android.widget.TextView;
 import kappathetapi.ktp.R;
 
 import kappathetapi.ktp.activities.PledgingActivity;
-import kappathetapi.ktp.fragments.dummy.DummyContent;
+import kappathetapi.ktp.classes.Member;
 
 /**
  * A fragment representing a list of Items.
@@ -39,10 +39,15 @@ public class MeetingBoxFragment extends Fragment implements AbsListView.OnItemCl
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private ListAdapter mAdapter;
+    private MeetingAdapter mAdapter;
 
-    public static MeetingBoxFragment newInstance(String param1, String param2) {
+    private Member[] members;
+    private Member user;
+
+    public static MeetingBoxFragment newInstance(Member user, Member[] members) {
         MeetingBoxFragment fragment = new MeetingBoxFragment();
+        fragment.members = members;
+        fragment.user = user;
         return fragment;
     }
 
@@ -58,8 +63,9 @@ public class MeetingBoxFragment extends Fragment implements AbsListView.OnItemCl
         super.onCreate(savedInstanceState);
 
         // TODO: Change Adapter to display your content
-        mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
+        mAdapter = new MeetingAdapter<Member>(getActivity(),
+                R.layout.list_item_meeting, R.id.meeting_layout, members, getActivity());
+        mAdapter.setUser(user);
     }
 
     @Override
@@ -100,7 +106,8 @@ public class MeetingBoxFragment extends Fragment implements AbsListView.OnItemCl
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onMeetingSelection(DummyContent.ITEMS.get(position).id);
+            //TODO: update to interact with stuff
+            mListener.onMeetingSelection("");
         }
     }
 

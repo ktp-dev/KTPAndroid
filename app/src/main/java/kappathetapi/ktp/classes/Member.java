@@ -538,6 +538,34 @@ public class Member {
         return true;
     }
 
+    public void copy(Member member) {
+        setFirstName(member.getFirstName());
+        setLastName(member.getLastName());
+        setUniqname(member.getUniqname());
+        setYear(member.getYear());
+        setMajor(member.getMajor());
+        setGender(member.getGender());
+        setHometown(member.getHometown());
+        setBiography(member.getBiography());
+        setProfPicUrl(member.getProfPicUrl());
+        setAccount(member.getAccount());
+        setId(member.getId());
+        setV(member.getV());
+        setEmail(member.getEmail());
+        setPhoneNumber(member.getPhoneNumber());
+        setTwitter(member.getTwitter());
+        setFacebook(member.getFacebook());
+        setLinkedin(member.getLinkedin());
+        setPersonalSite(member.getPersonalSite());
+        setPledgeClass(member.getPledgeClass());
+        setMembershipStatus(member.getMembershipStatus());
+        setRole(member.getRole());
+        setCommittees(member.getCommittees());
+        setServiceHours(member.getServiceHours());
+        setProDevEvents(member.getProDevEvents());
+        setMeetings(member.getMeetings());
+    }
+
     //Comparators for the sortings :DDDDDD
     public static class MemberNameComparator implements Comparator<Member> {
 

@@ -2,6 +2,8 @@ package kappathetapi.ktp.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -12,7 +14,7 @@ import org.json.JSONArray;
 
 import kappathetapi.ktp.R;
 import kappathetapi.ktp.classes.Member;
-import kappathetapi.ktp.fragments.MeetingBoxFragment;
+import kappathetapi.ktp.fragments.meetings.MeetingBoxFragment;
 import kappathetapi.ktp.fragments.NavigationDrawerFragment;
 
 /**
@@ -52,17 +54,27 @@ public class PledgingActivity extends Activity implements NavigationDrawerFragme
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        Intent intent = new Intent(getApplicationContext(), HomePageActivity.class);
-        intent.putExtra(HomePageActivity.HOME_PAGE_SELECTION, position);
+        Intent intent;
+        FragmentManager fragmentManager = getFragmentManager();
+        Fragment frag = MeetingBoxFragment.newInstance();
 
         switch(position) {
             case 0:
+                intent = new Intent(getApplicationContext(), HomePageActivity.class);
+                intent.putExtra(HomePageActivity.HOME_PAGE_SELECTION, position);
                 startActivity(intent);
                 finish();
                 break;
             case 1:
+                intent = new Intent(getApplicationContext(), HomePageActivity.class);
+                intent.putExtra(HomePageActivity.HOME_PAGE_SELECTION, position);
                 startActivity(intent);
                 finish();
+                break;
+            case 2:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, frag)
+                        .commit();
                 break;
         }
     }
