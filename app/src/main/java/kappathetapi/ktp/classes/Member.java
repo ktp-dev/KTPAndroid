@@ -32,7 +32,7 @@ public class Member {
     private String biography = "";
     private String profPicUrl = "";
     private String account = "";
-    private String id = "";
+    private ObjectId id = null;
     private String v = "";
 
     // contact info
@@ -218,15 +218,15 @@ public class Member {
         }
     }
 
-    public String getId() { return id; }
+    public ObjectId getId() { return id; }
 
-    private void setId(String id) {
+    private void setId(ObjectId id) {
         this.id = id;
     }
 
     public void setId(JSONObject obj) {
         try {
-            id = obj.getString("_id");
+            id = getObjectIdFromString(obj.getString("_id"));
         } catch (JSONException e) {
 
         }
@@ -477,6 +477,7 @@ public class Member {
             json.put("role", getRole());
             json.put("service_hours", getServiceHours());
             json.put("pro_dev_events", getProDevEvents());
+            json.put("_id", getId());
         } catch(JSONException e) {
             e.printStackTrace();
         }
@@ -521,7 +522,7 @@ public class Member {
         MembersRequest membersRequest = new MembersRequest();
         Log.d("JSON", toJSON().toString());
         String response = membersRequest.getResponse(currActivity.getString(R.string.server_address),
-                MembersRequest.RequestPath.MEMBERS, MembersRequest.RequestType.PUT, toJSON(), getId());
+                MembersRequest.RequestPath.MEMBERS, MembersRequest.RequestType.PUT, toJSON(), getId().toHexString());
         try {
             JSONObject jsonObject = new JSONObject(response);
             setFields(jsonObject);
@@ -534,7 +535,7 @@ public class Member {
     public boolean delete(Activity currActivity) {
         MembersRequest membersRequest = new MembersRequest();
         membersRequest.getResponse(currActivity.getString(R.string.server_address),
-                MembersRequest.RequestPath.MEMBERS, MembersRequest.RequestType.DELETE, toJSON(), getId());
+                MembersRequest.RequestPath.MEMBERS, MembersRequest.RequestType.DELETE, toJSON(), getId().toHexString());
         return true;
     }
 
