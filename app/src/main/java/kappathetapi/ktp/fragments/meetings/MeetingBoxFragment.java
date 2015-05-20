@@ -62,9 +62,8 @@ public class MeetingBoxFragment extends Fragment implements AbsListView.OnItemCl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // TODO: Change Adapter to display your content
         mAdapter = new MeetingAdapter<Member>(getActivity(),
-                R.layout.list_item_meeting, R.id.meeting_layout, members, getActivity());
+                R.layout.list_item_meeting, R.id.meeting_layout, members, this);
         mAdapter.setUser(user);
     }
 
@@ -106,7 +105,6 @@ public class MeetingBoxFragment extends Fragment implements AbsListView.OnItemCl
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            //TODO: update to interact with stuff
             mListener.onMeetingSelection("");
         }
     }
@@ -126,7 +124,6 @@ public class MeetingBoxFragment extends Fragment implements AbsListView.OnItemCl
 
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onMeetingSelection(String id);
     }
 

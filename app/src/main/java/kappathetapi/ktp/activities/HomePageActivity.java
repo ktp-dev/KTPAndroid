@@ -20,6 +20,7 @@ import org.json.JSONException;
 import java.util.Arrays;
 
 import kappathetapi.ktp.classes.datamangement.MemberArrayManager;
+import kappathetapi.ktp.classes.datamangement.TempManager;
 import kappathetapi.ktp.classes.eventhandlers.DeleteEventHandler;
 import kappathetapi.ktp.classes.eventhandlers.EmailEventHandler;
 import kappathetapi.ktp.classes.eventhandlers.FacebookEventHandler;
@@ -50,7 +51,6 @@ public class HomePageActivity extends Activity
     private CharSequence mTitle; //Title displayed at top left of screen (ex: Members, HomePageActivity, etc.)
     public static JSONArray jsonArray = null;
     public static Member[] memberArray;
-    public static String HOME_PAGE_JSON = "com.kappathetapi.app.HOME_PAGE_JSON";
     public static String HOME_PAGE_UNIQNAME = "com.kappathetapi.app.HOME_PAGE_UNIQNAME";
     public static String HOME_PAGE_LAST_CLICKED_MEMBER = "com.kappathetapi.app.HOME_PAGE_LAST_CLICKED_MEMBER";
     public static String HOME_PAGE_SELECTION = "com.kappathetapi.app.HOME_PAGE_SELECTION";
@@ -58,7 +58,7 @@ public class HomePageActivity extends Activity
     public Member currentMember = new Member(); //Currently logged in member
     public Member lastClickedMember; //The last member that was picked from member list under members
 
-    private MemberArrayManager memberArrayManager = new MemberArrayManager();
+    private TempManager tempManager = new TempManager();
     private int navSelection = 1;
 
     @Override
@@ -84,7 +84,7 @@ public class HomePageActivity extends Activity
         }
 
         currentMember = new Member();
-        memberArray = memberArrayManager.loadArray(uniqname, currentMember, this);
+        memberArray = tempManager.loadMemberArray(uniqname, currentMember, this);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -123,7 +123,7 @@ public class HomePageActivity extends Activity
                         .commit();
                 break;
             case 2:
-                memberArrayManager.saveArray(memberArray, this);
+                tempManager.save(uniqname, memberArray, this);
                 intent = new Intent(getApplicationContext(), PledgingActivity.class);
                 startActivity(intent);
                 finish();
@@ -246,11 +246,8 @@ public class HomePageActivity extends Activity
     public void onStop() {
         SharedPreferences prefs = this.getSharedPreferences(getString(R.string.app_identifier), MODE_PRIVATE);
 
-        memberArrayManager.saveArray(memberArray, this);
+        tempManager.save(uniqname, memberArray, this);
 
-        if(uniqname != null) {
-            prefs.edit().putString(HOME_PAGE_UNIQNAME, uniqname).apply();
-        }
         if(lastClickedMember != null) {
             prefs.edit().putString(HOME_PAGE_LAST_CLICKED_MEMBER, lastClickedMember.toJSON().toString()).apply();
         }
@@ -264,10 +261,10 @@ public class HomePageActivity extends Activity
         super.onRestart();
         SharedPreferences prefs = this.getSharedPreferences(getString(R.string.app_identifier), MODE_PRIVATE);
 
-        uniqname = prefs.getString(HOME_PAGE_UNIQNAME, "");
+        uniqname = tempManager.loadUniqname(this);
 
         currentMember = new Member();
-        memberArray = memberArrayManager.loadArray(uniqname, currentMember, this);
+        memberArray = tempManager.loadMemberArray(uniqname, currentMember, this);
     }
 
     @Override

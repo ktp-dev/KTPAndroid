@@ -2,13 +2,13 @@ package kappathetapi.ktp.classes;
 
 import android.app.Activity;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
 import kappathetapi.ktp.R;
@@ -56,7 +56,7 @@ public class Member {
     private int proDevEvents = -1;
 
     // pledge/active meetings
-    private JSONArray meetings = null; // meetings: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PledgeMeeting' }]
+    private ObjectId[] meetings = null; // meetings: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PledgeMeeting' }]
 
     public String getFirstName() {
         return firstName;
@@ -438,17 +438,17 @@ public class Member {
         }
     }
 
-    public JSONArray getMeetings() {
+    public ObjectId[] getMeetings() {
         return meetings;
     }
 
-    public void setMeetings(JSONArray meetings) {
+    public void setMeetings(ObjectId[] meetings) {
         this.meetings = meetings;
     }
 
     public void setMeetings(JSONObject obj) {
         try {
-            meetings = (JSONArray)(obj.get("meetings"));
+            meetings = getObjectIdsFromString(obj.getString("meetings"));
         } catch(JSONException e) {
 
         }
@@ -595,5 +595,29 @@ public class Member {
             return (rhs.getLastName() + rhs.getFirstName() + rhs.getUniqname()).compareToIgnoreCase(
                     (lhs.getLastName() + lhs.getFirstName() + lhs.getUniqname()));
         }
+    }
+
+    private ObjectId[] getObjectIdsFromString(String objectString) {
+        String[] strings = objectString.split(",");
+        int size = strings.length;
+        ArrayList<ObjectId> list = new ArrayList<>();
+        for(int i = 0; i < size; ++i) {
+            list.add(getObjectIdFromString(strings[i]));
+        }
+
+        ObjectId[] array = new ObjectId[list.size()];
+        return list.toArray(array);
+    }
+
+    private ObjectId getObjectIdFromString(String objectString) {
+        StringBuilder builder = new StringBuilder(24);
+        int size = objectString.length();
+        for(int i = 0; i < size; ++i) {
+            if(Character.isLetterOrDigit(objectString.charAt(i))) {
+                builder.append(objectString.charAt(i));
+            }
+        }
+
+        return new ObjectId(builder.toString());
     }
 }

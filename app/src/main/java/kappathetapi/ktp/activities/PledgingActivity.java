@@ -14,6 +14,7 @@ import org.json.JSONArray;
 
 import kappathetapi.ktp.R;
 import kappathetapi.ktp.classes.Member;
+import kappathetapi.ktp.classes.datamangement.TempManager;
 import kappathetapi.ktp.fragments.meetings.MeetingBoxFragment;
 import kappathetapi.ktp.fragments.NavigationDrawerFragment;
 
@@ -30,7 +31,9 @@ public class PledgingActivity extends Activity implements NavigationDrawerFragme
     private Member[] memberArray;
     private String uniqname = "";//Currently logged in member's uniqname
     private Member currentMember = new Member(); //Currently logged in member
-    private Member lastClickedMember; //The last member that was picked from member list under members
+    private Member lastClickedMember; //The last member that was picked from member list
+
+    TempManager tempManager = new TempManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,9 @@ public class PledgingActivity extends Activity implements NavigationDrawerFragme
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
+
+        uniqname = tempManager.loadUniqname(this);
+        memberArray = tempManager.loadMemberArray(uniqname, currentMember, this);
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
@@ -56,7 +62,7 @@ public class PledgingActivity extends Activity implements NavigationDrawerFragme
     public void onNavigationDrawerItemSelected(int position) {
         Intent intent;
         FragmentManager fragmentManager = getFragmentManager();
-        Fragment frag = MeetingBoxFragment.newInstance();
+        Fragment frag;
 
         switch(position) {
             case 0:
@@ -72,6 +78,7 @@ public class PledgingActivity extends Activity implements NavigationDrawerFragme
                 finish();
                 break;
             case 2:
+                frag = MeetingBoxFragment.newInstance(currentMember, memberArray);
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, frag)
                         .commit();

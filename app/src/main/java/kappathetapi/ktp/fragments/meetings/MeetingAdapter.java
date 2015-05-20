@@ -1,10 +1,12 @@
 package kappathetapi.ktp.fragments.meetings;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -22,14 +24,18 @@ import kappathetapi.ktp.classes.Member;
  */
 public class MeetingAdapter<T> extends ArrayAdapter<T> {
     private Member user = null;
-    private Activity mActivity;
-    public MeetingAdapter(Context context, int resource, int textViewResourceId, T[] objects, Activity activity) {
+    private Fragment mFragment;
+    public MeetingAdapter(Context context, int resource, int textViewResourceId, T[] objects, Fragment frag) {
         super(context, resource, textViewResourceId, objects);
-        mActivity = activity;
+        mFragment = frag;
     }
 
     @Override
     public View getView(int position, View viewConvert, ViewGroup parent) {
+        if(viewConvert == null) {
+            LayoutInflater vi = (LayoutInflater)(getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
+            viewConvert=vi.inflate(R.layout.list_item_meeting, null);
+        }
         Member member = (Member)getItem(position);
         boolean hasMet = checkForMeeting(member);
 
@@ -45,7 +51,9 @@ public class MeetingAdapter<T> extends ArrayAdapter<T> {
     }
 
     private void setImage(View view, int photoId) {
-        Bitmap bmp = BitmapFactory.decodeResource(mActivity.getResources(), photoId);
+        Bitmap bmp = BitmapFactory.decodeResource(mFragment.getResources(), photoId);
+        System.out.println(view == null);
+        System.out.println(view.findViewById(R.id.meeting_image) == null);
         ((ImageView)(view.findViewById(R.id.meeting_image))).setImageBitmap(bmp);
     }
 
@@ -57,20 +65,11 @@ public class MeetingAdapter<T> extends ArrayAdapter<T> {
         this.user = user;
     }
 
+    //TODO: make actually return if people have met
     private boolean checkForMeeting(Member member) {
-        JSONArray meetingIds = member.getMeetings();
-        int size = meetingIds.length();
+
         boolean hasMet = false;
-        for(int i = 0; i < size && !hasMet; ++i) {
-            try {
-                Log.d("MEETING ID?", meetingIds.get(i).toString());
-                if (meetingIds.get(i).toString().equals(user.getId())) {
-                    hasMet = true;
-                }
-            } catch(JSONException e) {
-                e.printStackTrace();
-            }
-        }
+
         return hasMet;
     }
 }
